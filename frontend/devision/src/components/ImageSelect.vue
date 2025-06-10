@@ -1,11 +1,39 @@
 <script setup lang="ts">
 import {ref} from 'vue';
-import { BFormFile } from 'bootstrap-vue-next';
+import type {Ref} from 'vue';
+import {BFormFile, BListGroup} from 'bootstrap-vue-next';
 
 const file = ref<null | File>(null);
+
+interface imageListItems{
+    id: number;
+    text: string;
+}
+
+const imageitems: Ref<imageListItems[]> = ref([
+    //{id: 1, text:'Image1.jpg'} Example schema
+]);
+
+// Adds an item to the image list dropdown under the file input
+let nextId: number = 1;
+const addItem = (name: string): void => {
+    imageitems.value.push({id: nextId++, text: name});
+};
+
+const handleFileSelect = (event: Event): void => {
+    if (file.value){
+        addItem(file.value.name);
+        file.value = null;
+    }
+};
+
 </script>
 
 <template>
-<BFormFile v-model="file" label="Please input an image..."/>
-
+<BFormFile v-model="file" label="Please input an image..." @change="handleFileSelect"/>
+<BListGroup>
+    <BListGroupItem v-for="item in imageitems" :key="item.id">
+        {{item.text}}
+    </BListGroupItem>
+</BListGroup>
 </template>
