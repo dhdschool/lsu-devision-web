@@ -7,5 +7,5 @@ Bootstrap Vue<br>
 Django 
 
 Install Guide:<br>
-> cd ~/lsu-devision-web/frontend/devision:<br>
+> cd ~/lsu-devision-web/frontend/devision<br>
 > npm run dev
