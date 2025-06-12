@@ -1,11 +1,11 @@
 For new installs
 
-Dependencies:
-NPM
-Vue
-Bootstrap Vue
+Dependencies:<br>
+NPM<br>
+Vue<br>
+Bootstrap Vue<br>
 Django 
 
-Install Guide:
+Install Guide:<br>
 From ../lsu-devision-web/frontend/devision:
 > npm run dev
