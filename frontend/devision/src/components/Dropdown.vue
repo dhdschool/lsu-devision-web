@@ -1,12 +1,21 @@
-<script setup lang "ts">
-<div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Dropdown button
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="#">Action</a>
-    <a class="dropdown-item" href="#">Another action</a>
-    <a class="dropdown-item" href="#">Something else here</a>
-  </div>
-</div>
+<script setup lang = "ts">
+import {ref} from 'vue';
+import type {Ref} from 'vue';
+import {BDropdown, BDropdownItem, BImg} from 'bootstrap-vue-next';
+import {imageitems} from './ImageSelect.vue'
+
+
+// const images = Ref<string[]>
+
 </script>
+
+
+<template>
+  <div>
+    <b-dropdown id="dropdown-1" text="Images" class="m-md-2">
+      <b-dropdown-item v-for="(img, idx) in imageitems" :key="idx">
+        <b-img :src="img" fluid height="40" />
+      </b-dropdown-item>
+    </b-dropdown>
+  </div>
+</template>

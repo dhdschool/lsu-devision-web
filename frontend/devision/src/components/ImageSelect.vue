@@ -3,6 +3,7 @@ import {ref} from 'vue';
 import type {Ref} from 'vue';
 import {BFormFile, BListGroup} from 'bootstrap-vue-next';
 
+
 const file = ref<null | File>(null);
 
 interface imageListItems{
@@ -14,6 +15,7 @@ const imageitems: Ref<imageListItems[]> = ref([
     //{id: 1, text:'Image1.jpg'} Example schema
 ]);
 
+export {imageitems} 
 // Adds an item to the image list dropdown under the file input
 let nextId: number = 1;
 const addItem = (name: string): void => {
