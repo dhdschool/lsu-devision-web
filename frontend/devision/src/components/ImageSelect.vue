@@ -6,20 +6,20 @@ import {BFormFile, BListGroup} from 'bootstrap-vue-next';
 
 const file = ref<null | File>(null);
 
-interface imageListItems{
+export interface imageListItems{
     id: number;
     text: string;
 }
 
-const imageitems: Ref<imageListItems[]> = ref([
+const imageItems: Ref<imageListItems[]> = ref([
     //{id: 1, text:'Image1.jpg'} Example schema
 ]);
 
-export {imageitems} 
+
 // Adds an item to the image list dropdown under the file input
 let nextId: number = 1;
 const addItem = (name: string): void => {
-    imageitems.value.push({id: nextId++, text: name});
+    imageItems.value.push({id: nextId++, text: name});
 };
 
 const handleFileSelect = (event: Event): void => {
@@ -29,12 +29,16 @@ const handleFileSelect = (event: Event): void => {
     }
 };
 
+// Expose imageitems
+defineExpose({
+    imageItems
+}) 
 </script>
 
 <template>
 <BFormFile v-model="file" label="Please input an image..." @change="handleFileSelect"/>
 <BListGroup>
-    <BListGroupItem v-for="item in imageitems" :key="item.id">
+    <BListGroupItem v-for="item in imageItems" :key="item.id">
         {{item.text}}
     </BListGroupItem>
 </BListGroup>

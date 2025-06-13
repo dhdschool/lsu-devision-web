@@ -10,6 +10,10 @@ declare module 'vue' {
   export interface GlobalComponents {
     BListGroup: typeof import('bootstrap-vue-next/components/BListGroup')['BListGroup']
     BListGroupItem: typeof import('bootstrap-vue-next/components/BListGroup')['BListGroupItem']
+    Dropdown: typeof import('./src/components/Dropdown.vue')['default']
+    DropdownImages: typeof import('./src/components/DropdownImages.vue')['default']
+    DropdownList: typeof import('./src/components/DropdownList.vue')['default']
+    DropDownList: typeof import('./src/components/DropDownList.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     IconCommunity: typeof import('./src/components/icons/IconCommunity.vue')['default']
     IconDocumentation: typeof import('./src/components/icons/IconDocumentation.vue')['default']
