@@ -3,6 +3,9 @@ defineProps<{
   msg: string
 }>()
 import ImageSelect from './ImageSelect.vue';
+// Import tests.
+import DropdownImages from './DropdownImages.vue';
+import DropdownList from './DropdownList.vue';
 </script>
 
 <template>
@@ -16,6 +19,13 @@ import ImageSelect from './ImageSelect.vue';
   </div>
   <div class="greetings">
     <ImageSelect/>
+  </div>
+  <!--testing the dropdown lists-->
+
+  <div class = "greetings">
+      <DropdownImages/>
+      <DropdownList/>
+
   </div>
 </template>
 
