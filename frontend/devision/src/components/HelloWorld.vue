@@ -6,6 +6,10 @@ import ImageSelect from './ImageSelect.vue';
 // Import tests.
 import DropdownImages from './DropdownImages.vue';
 import DropdownList from './DropdownList.vue';
+
+// define prop and selection for DropDownList
+
+const dropDownListItems= ["Option 1", "Option 2", "Option 3"]
 </script>
 
 <template>
@@ -23,8 +27,8 @@ import DropdownList from './DropdownList.vue';
   <!--testing the dropdown lists-->
 
   <div class = "greetings">
-      <DropdownImages/>
-      <DropdownList/>
+      <!--<DropdownImages/>-->
+      <DropdownList :items="dropDownListItems"/>
 
   </div>
 </template>
