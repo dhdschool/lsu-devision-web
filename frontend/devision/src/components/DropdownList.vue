@@ -7,12 +7,7 @@ import {BDropdown, BDropdownItem, BImg} from 'bootstrap-vue-next';
 defineProps<{
   items: string[];
 }>();
-
-// Previous trash
-// const texts : Ref<string[]> = ref([]);
-// const text : Ref<string> = ref("Test");
 </script>
-
 
 <template>
   <div>

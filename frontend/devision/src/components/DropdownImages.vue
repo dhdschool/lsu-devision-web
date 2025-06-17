@@ -4,9 +4,11 @@ import type {Ref} from 'vue';
 import {BDropdown, BDropdownItem, BImg} from 'bootstrap-vue-next';
 import type {imageListItems} from './ImageSelect.vue';
 
+defineProps<{
+  images: string[];
+}>();
 
-
-const images : Ref<imageListItems[]> = ref([]);
+// const images : Ref<imageListItems[]> = ref([]);
 
 </script>
 
