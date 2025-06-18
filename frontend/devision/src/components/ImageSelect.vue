@@ -3,6 +3,7 @@ import {ref} from 'vue';
 import type {Ref} from 'vue';
 import {BFormFile, BListGroup, BImg} from 'bootstrap-vue-next';
 import DropdownImages from './DropdownImages.vue';
+import type { RefSymbol } from '@vue/reactivity';
 
 export interface imageListItems{
     id: number;
@@ -21,31 +22,50 @@ let nextId: number = 1;
 
 const handleFileSelect = async() => {
     if (file.value){
+        const currentFile = file.value
         const reader = new FileReader()
         reader.onload = (e) => {
             imageItems.value.push({
                 id: nextId++,
-                name: file.value!.name,
+                name: currentFile.name,
                 url: e.target?.result as string
             })
             file.value = null
         }
-        reader.readAsDataURL(file.value)
+        reader.readAsDataURL(currentFile)
     }
 }
 
-// Expose imageitems
+const clearAllImageListItems = () => {
+    imageItems.value = []
+}
 
+const clearSingleImageListItems = (id: number) => {
+    const idx = imageItems.value.findIndex(item => item.id === id)
+    if (idx !== -1){
+        imageItems.value.splice(idx, 1)
+    }
+
+}
 </script>
 
 <template>
 <BFormFile v-model="file" label="Please input an image..." @change="handleFileSelect"/>
-<BListGroup>
-    <BListGroupItem v-for="item in imageItems" :key="item.id">
+
+<button @click="clearAllImageListItems" style="margin-bottom: 1rem;">
+  Clear All Images
+</button>
+
+<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
+    <BListGroup>
+        <BListGroupItem v-for="item in imageItems" :key="item.id">
         {{ item.name }}
-        <b-img :src="item.url" fluid height = "40"/>
-    </BListGroupItem>
-</BListGroup>
-
-
+        <b-img :src="item.url" height ="80" style="border: 1px solid #ccc; border-radius: 4px;"/>
+        <!--Add an option to remove an image-->
+        <button @click="clearSingleImageListItems(item.id)">
+            Clear this Image
+        </button>
+        </BListGroupItem>
+    </BListGroup>
+</div>
 </template>
