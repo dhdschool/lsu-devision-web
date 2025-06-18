@@ -8,6 +8,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BButton: typeof import('bootstrap-vue-next/components/BButton')['BButton']
+    BForm: typeof import('bootstrap-vue-next/components/BForm')['BForm']
     BListGroup: typeof import('bootstrap-vue-next/components/BListGroup')['BListGroup']
     BListGroupItem: typeof import('bootstrap-vue-next/components/BListGroup')['BListGroupItem']
     Dropdown: typeof import('./src/components/Dropdown.vue')['default']

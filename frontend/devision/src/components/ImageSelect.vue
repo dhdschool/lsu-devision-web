@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import {ref} from 'vue';
 import type {Ref} from 'vue';
-import {BFormFile, BListGroup, BImg} from 'bootstrap-vue-next';
-import DropdownImages from './DropdownImages.vue';
-import type { RefSymbol } from '@vue/reactivity';
+import {BFormFile, BListGroup, BListGroupItem, BImg, BButton} from 'bootstrap-vue-next';
 
 export interface imageListItems{
     id: number;
@@ -12,6 +10,8 @@ export interface imageListItems{
 }
 
 const file = ref<null | File>(null);
+// used to distinguish between identical uploads of images. Starts at 0 and increments forever.
+const fileInputKey = ref(0)
 
 const imageItems: Ref<imageListItems[]> = ref([
     //{id: 1, text:'Image1.jpg'} Example schema
@@ -20,7 +20,7 @@ const imageItems: Ref<imageListItems[]> = ref([
 // Adds an item to the image list dropdown under the file input
 let nextId: number = 1;
 
-const handleFileSelect = async() => {
+const handleFileSelect = (e:Event) => {
     if (file.value){
         const currentFile = file.value
         const reader = new FileReader()
@@ -30,7 +30,9 @@ const handleFileSelect = async() => {
                 name: currentFile.name,
                 url: e.target?.result as string
             })
+            console.log("Added", imageItems.value)
             file.value = null
+            fileInputKey.value++
         }
         reader.readAsDataURL(currentFile)
     }
@@ -38,6 +40,7 @@ const handleFileSelect = async() => {
 
 const clearAllImageListItems = () => {
     imageItems.value = []
+    fileInputKey.value = 0
 }
 
 const clearSingleImageListItems = (id: number) => {
@@ -45,27 +48,35 @@ const clearSingleImageListItems = (id: number) => {
     if (idx !== -1){
         imageItems.value.splice(idx, 1)
     }
-
 }
 </script>
 
 <template>
-<BFormFile v-model="file" label="Please input an image..." @change="handleFileSelect"/>
+    <form @submit.prevent="handleFileSelect">
+        <b-form-file
+            :key="fileInputKey"
+            v-model="file" 
+            label="Please input an image..." 
+        />
 
-<button @click="clearAllImageListItems" style="margin-bottom: 1rem;">
-  Clear All Images
-</button>
+        <b-button variant="primary" type="submit" style="margin-right: 1rem;">
+            Upload Image
+        </b-button>
 
-<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
-    <BListGroup>
-        <BListGroupItem v-for="item in imageItems" :key="item.id">
-        {{ item.name }}
-        <b-img :src="item.url" height ="80" style="border: 1px solid #ccc; border-radius: 4px;"/>
-        <!--Add an option to remove an image-->
-        <button @click="clearSingleImageListItems(item.id)">
-            Clear this Image
-        </button>
-        </BListGroupItem>
-    </BListGroup>
-</div>
+        <b-button variant="danger" @click="clearAllImageListItems" style="margin-bottom: 1rem;">
+            Clear All Images
+        </b-button>
+    </form>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
+        <b-list-group>
+            <b-list-group-item v-for="item in imageItems" :key="item.id">
+            {{ item.name }}
+            <b-img :src="item.url" height="80" style="border: 1px solid #ccc; border-radius: 4px;"/>
+            <!--Add an option to remove an image-->
+            <b-button variant="danger" @click="clearSingleImageListItems(item.id)">
+                Clear this Image
+            </b-button>
+        </b-list-group-item>
+    </b-list-group>
+    </div>
 </template>
