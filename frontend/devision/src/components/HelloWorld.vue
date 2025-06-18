@@ -6,12 +6,12 @@ import ImageSelect from './ImageSelect.vue';
 // Import tests.
 import DropdownImages from './DropdownImages.vue';
 import DropdownList from './DropdownList.vue';
-
+//import { imageItems } from './ImageSelect.vue';
 // define prop and selection for DropDownList
 const dropDownListItems = ["Option 1", "Option 2", "Option 3"]
 
 //define selection for DropDownImages
-const selectedImages = ref<string[]>([]);
+// const selectedImages = ref<string[]>([]);
 </script>
 
 <template>
@@ -31,7 +31,7 @@ const selectedImages = ref<string[]>([]);
   <div class = "greetings">
       <!--<DropdownImages/>-->
       <DropdownList :items="dropDownListItems"/>
-      <DropdownImages :images = "selectedImages"/>
+      <!--<DropdownImages :images = "imageItems"/>-->
 
   </div>
 </template>
