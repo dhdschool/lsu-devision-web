@@ -19,7 +19,7 @@ defineProps<{
   <div>
     <b-dropdown id="dropdown-1" text="Images" class="m-md-2">
       <b-dropdown-item v-for="(img, idx) in images" :key="idx">
-        <b-img :src="img.text" fluid height="40" />
+        <b-img :src="img.name" fluid height="40" />
       </b-dropdown-item>
     </b-dropdown>
   </div>

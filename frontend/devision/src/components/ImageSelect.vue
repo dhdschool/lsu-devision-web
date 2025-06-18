@@ -6,7 +6,7 @@ import DropdownImages from './DropdownImages.vue';
 
 export interface imageListItems{
     id: number;
-    text: string;
+    name: string;
     url: string
 }
 
@@ -19,17 +19,20 @@ const imageItems: Ref<imageListItems[]> = ref([
 // Adds an item to the image list dropdown under the file input
 let nextId: number = 1;
 
-const addItem = (name: string): void => {
-    imageItems.value.push({id: nextId++, text: name});
-};
-
-const handleFileSelect = (event: Event): void => {
+const handleFileSelect = async() => {
     if (file.value){
-        addItem(file.value.name);
-        
-        file.value = null;
+        const reader = new FileReader()
+        reader.onload = (e) => {
+            imageItems.value.push({
+                id: nextId++,
+                name: file.value!.name,
+                url: e.target?.result as string
+            })
+            file.value = null
+        }
+        reader.readAsDataURL(file.value)
     }
-};
+}
 
 // Expose imageitems
 
@@ -39,8 +42,10 @@ const handleFileSelect = (event: Event): void => {
 <BFormFile v-model="file" label="Please input an image..." @change="handleFileSelect"/>
 <BListGroup>
     <BListGroupItem v-for="item in imageItems" :key="item.id">
-        {{ item.text }}
-        <b-img :src="item.text" fluid height = "40"/>
+        {{ item.name }}
+        <b-img :src="item.url" fluid height = "40"/>
     </BListGroupItem>
 </BListGroup>
+
+
 </template>
