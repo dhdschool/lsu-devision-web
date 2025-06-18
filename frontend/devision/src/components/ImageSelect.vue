@@ -52,31 +52,46 @@ const clearSingleImageListItems = (id: number) => {
 </script>
 
 <template>
-    <form @submit.prevent="handleFileSelect">
-        <b-form-file
-            :key="fileInputKey"
-            v-model="file" 
-            label="Please input an image..." 
-        />
-
-        <b-button variant="primary" type="submit" style="margin-right: 1rem;">
-            Upload Image
-        </b-button>
-
-        <b-button variant="danger" @click="clearAllImageListItems" style="margin-bottom: 1rem;">
-            Clear All Images
-        </b-button>
-    </form>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
-        <b-list-group>
-            <b-list-group-item v-for="item in imageItems" :key="item.id">
-            {{ item.name }}
-            <b-img :src="item.url" height="80" style="border: 1px solid #ccc; border-radius: 4px;"/>
-            <!--Add an option to remove an image-->
-            <b-button variant="danger" @click="clearSingleImageListItems(item.id)">
-                Clear this Image
+    <div class="container" style="max-width: 500px; margin: 2rem auto;">
+        <form @submit.prevent="handleFileSelect" class="mb-5">
+            <div class="d-flex align-items-end gap-2 mb-3">
+                <b-form-file
+                    :key="fileInputKey"
+                    v-model="file" 
+                    label="Please select an image..." 
+                    browse-text="Browse"
+                    class="flex-grow-1"
+                />
+                <b-button variant="primary" type="submit">
+                    Upload Image
+                </b-button>
+            </div>
+            <b-button variant="danger" @click="clearAllImageListItems" class="w-100">
+                Clear All Images
             </b-button>
-        </b-list-group-item>
-    </b-list-group>
+        </form>
+        <b-list-group>
+            <b-list-group-item 
+                v-for="item in imageItems"
+                :key="item.id"
+                class="d-flex align-items-center justify-content-between"
+                style="gap:1rem;"
+            >
+            <div class ="dflex align-items-center" style="gap: 1rem"></div>
+            <b-img 
+                :src="item.url" 
+                height="60" 
+                width="60" 
+                style="object-fit: cover; border: 1px solid #ccc; border-radius: 8px;"
+                alt="item.name"
+            />
+            <span style="font-weight: 500;">{{ item.name }}</span>"
+            
+            <!--Add an option to remove an image-->
+            <b-button size="sm" variant="danger" @click="clearSingleImageListItems(item.id)">
+                Remove
+            </b-button>
+            </b-list-group-item>
+        </b-list-group>
     </div>
 </template>
