@@ -2,6 +2,16 @@
 defineProps<{
   msg: string
 }>()
+import ImageSelect from './ImageSelect.vue';
+// Import tests.
+import DropdownImages from './DropdownImages.vue';
+import DropdownList from './DropdownList.vue';
+//import { imageItems } from './ImageSelect.vue';
+// define prop and selection for DropDownList
+const dropDownListItems = ["Option 1", "Option 2", "Option 3"]
+
+//define selection for DropDownImages
+// const selectedImages = ref<string[]>([]);
 </script>
 
 <template>
@@ -12,6 +22,17 @@ defineProps<{
       <a href="https://vite.dev/" target="_blank" rel="noopener">Vite</a> +
       <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>. What's next?
     </h3>
+  </div>
+  <div class="greetings">
+    <ImageSelect/>
+  </div>
+  <!--testing the dropdown lists-->
+
+  <div class = "greetings">
+      <!--<DropdownImages/>-->
+      <DropdownList :items="dropDownListItems"/>
+      <!--<DropdownImages :images = "imageItems"/>-->
+
   </div>
 </template>
 
