@@ -9,6 +9,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BButton: typeof import('bootstrap-vue-next/components/BButton')['BButton']
+    BButtonGroup: typeof import('bootstrap-vue-next/components/BButton')['BButtonGroup']
     BForm: typeof import('bootstrap-vue-next/components/BForm')['BForm']
     BListGroup: typeof import('bootstrap-vue-next/components/BListGroup')['BListGroup']
     BListGroupItem: typeof import('bootstrap-vue-next/components/BListGroup')['BListGroupItem']
@@ -25,7 +26,9 @@ declare module 'vue' {
     ImageSelect: typeof import('./src/components/ImageSelect.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TestPage: typeof import('./src/components/TestPage.vue')['default']
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
+    Toolbar: typeof import('./src/components/Toolbar.vue')['default']
     WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
   }
 }

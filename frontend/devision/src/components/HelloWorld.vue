@@ -4,7 +4,6 @@ defineProps<{
 }>()
 import ImageSelect from './ImageSelect.vue';
 // Import tests.
-import DropdownImages from './DropdownImages.vue';
 import DropdownList from './DropdownList.vue';
 //import { imageItems } from './ImageSelect.vue';
 // define prop and selection for DropDownList
@@ -15,6 +14,7 @@ const dropDownListItems = ["Option 1", "Option 2", "Option 3"]
 </script>
 
 <template>
+  <Toolbar/>
   <div class="greetings">
     <h1 class="green">{{ msg }}</h1>
     <h3>
@@ -31,6 +31,7 @@ const dropDownListItems = ["Option 1", "Option 2", "Option 3"]
   <div class = "greetings">
       <!--<DropdownImages/>-->
       <DropdownList :items="dropDownListItems"/>
+      
       <!--<DropdownImages :images = "imageItems"/>-->
 
   </div>
