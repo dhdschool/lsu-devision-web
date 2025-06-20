@@ -8,7 +8,7 @@ import BasePage from './views/BasePage.vue';
   <header>
     <!--<img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />-->
 
-    <div class="wrapper">
+    <div>
      <!--<HelloWorld msg="You did it!" />-->
       <BasePage/>
       <nav>
@@ -26,6 +26,13 @@ import BasePage from './views/BasePage.vue';
       </nav>
     </div>
   </header>
+  <body>
+
+  </body>
 
   <RouterView />
 </template>
+
+<style type="text/css">
+.app-bg{background-color:beige;}
+</style>
