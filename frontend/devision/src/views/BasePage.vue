@@ -4,6 +4,7 @@ console.log("Hello World")
 
 <template>
   <main>
+  <Toolbar/>
   <h1>"Base page"</h1> 
   <p>Under Construction</p>
   </main>
