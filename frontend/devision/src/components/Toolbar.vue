@@ -21,3 +21,9 @@ console.log("Toolbar Loaded!")
     </div>
   </main>
 </template>
+
+<style lang="css">
+.toolbar{
+  background-color: #81b4ba;
+}
+</style>
