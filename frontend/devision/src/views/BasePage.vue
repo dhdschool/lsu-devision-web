@@ -1,4 +1,6 @@
-<script setup lang="ts">    
+<script setup lang="ts">
+import Toolbar from "@/components/Toolbar.vue";
+
 console.log("Hello World")
 </script>
 
@@ -7,7 +9,9 @@ console.log("Hello World")
     <Toolbar/>
     <div class = "columns">
       <div class = "leftColumn"/>
-      <div class = "spacer"/>
+      <div class = "spacer">
+        <router-view></router-view>
+      </div>
       <div class = "rightColumn"/>
     </div>
   </div>
@@ -34,7 +38,9 @@ console.log("Hello World")
   min-height:60vh;
 }
 .spacer {
-  flex: 1 1 0%;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 .font{
   background-color: #000000;
