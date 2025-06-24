@@ -1,4 +1,6 @@
-<script setup lang="ts">    
+<script setup lang="ts">
+import Toolbar from "@/components/Toolbar.vue";
+
 console.log("Hello World")
 </script>
 
@@ -8,9 +10,7 @@ console.log("Hello World")
     <div class = "columns">
       <div class = "leftColumn"/>
       <div class = "spacer">
-        <!--TODO: Change name and CSS name to something that signifies this is the routerview-->
-        <RouterView />
-      </div>  
+
       <div class = "rightColumn"/>
     </div>
   </div>
@@ -38,9 +38,7 @@ console.log("Hello World")
 }
 
 .spacer {
-  flex: 1 1 0%;
-  color:#000000;
-  
+
 }
 .font{
   color: #000000;
