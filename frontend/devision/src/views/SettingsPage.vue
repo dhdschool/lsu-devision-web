@@ -1,18 +1,53 @@
 <script setup lang="ts">
 import App from "@/App.vue";
+type Toggle={
+  id: number;
+  name: string;
+  isActive: boolean;
+}
+const runtTimeToggle: Toggle[] = [
+  { id: 1, name: 'Automatically export to excel when predicting', isActive: true },
+  { id: 2, name: 'Place Holder', isActive: false },
+]
+
+const modelFolderToggle: Toggle[] = [
+  { id: 1, name: 'Save Model', isActive: true },
+  { id: 2, name: 'Save Folder', isActive: false },
+]
+
+const AppearanceToggle: Toggle[] = [
+  { id: 1, name: 'Light Theme', isActive: true },
+  { id: 2, name: 'Dark Theme', isActive: false },
+]
+
 
 const settingsSections = [
-  { id: 1, title: 'Account Settings' },
-  { id: 2, title: 'Notification Settings' },
-  { id: 3, title: 'Privacy Settings' },
-  { id: 4, title: 'Appearance' }
+  { id: 1, title: 'Run Time Settings', toggles: runtTimeToggle },
+  { id: 2, title: 'Model/Folder Default Settings', toggles: modelFolderToggle },
+  { id: 3, title: 'Appearance', toggles: AppearanceToggle }
 ]
+function toggleSetting(toggles: Toggle[], id: number): Toggle[] {
+  return toggles.map(toggle =>
+    toggle.id === id ? { ...toggle, isActive: !toggle.isActive } : toggle
+  );
+}
+function themeToggle(toggles: Toggle[], id: number): Toggle[] {
+  return toggles.map(toggle =>
+    toggle.id === id ? { ...toggle, isActive: !toggle.isActive } : toggle
+  );
+}
 </script>
 
 <template>
       <div class="settings-container">
         <div class="settings-section" v-for="section in settingsSections" :key="section.id">
           <h2>{{ section.title }}</h2>
+          <div v-for="toggle in section.toggles" :key="toggle.id">
+            <label>
+              <input type="checkbox" :checked="toggle.isActive" @change="section.toggles = toggleSetting(section.toggles, toggle.id)">
+              {{ toggle.name }}
+            </label>
+          </div>
         </div>
       </div>
 </template>
