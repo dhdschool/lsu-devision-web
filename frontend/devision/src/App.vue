@@ -34,5 +34,5 @@ import BasePage from './views/BasePage.vue';
 </template>
 
 <style type="text/css">
-.app-bg{color:#000000}
+.app-bg{color:#ffffff}
 </style>
