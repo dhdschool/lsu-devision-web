@@ -7,19 +7,27 @@ import BasePage from './views/BasePage.vue';
   <header>
     <!--<img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />-->
 
-    <div>
+     <div>
+     <!--<HelloWorld msg="You did it!" />-->
       <BasePage/>
-      <nav>
-      </nav>
+      <!--<nav>
+        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/account">Account</RouterLink>
+	@@ -23,16 +23,16 @@ import BasePage from './views/BasePage.vue';
+        <RouterLink to="/login">Login</RouterLink>
+        <RouterLink to="/predictions">Predictions</RouterLink>
+        <RouterLink to="/settings">Settings</RouterLink>
+      </nav>-->
     </div>
   </header>
   <body>
 
   </body>
 
-  <!--<RouterView />-->
+<!--<RouterView/>-->
 </template>
 
 <style type="text/css">
-.app-bg{background-color:beige;}
+.app-bg{color:#ffffff}
 </style>
