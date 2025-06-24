@@ -42,7 +42,7 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/LoginPage.vue'), 
+      component: () => import('../views/LoginPage.vue'),
     },
     {
       path: '/predictions',
@@ -52,7 +52,7 @@ const router = createRouter({
     {
       path: '/settings',
       name: 'settings',
-      component: () => import('../views/SettingsPage.vue'), 
+      component: () => import('../views/SettingsPage.vue'),
     }
   ],
 })
