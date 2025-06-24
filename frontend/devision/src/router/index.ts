@@ -53,12 +53,6 @@ const router = createRouter({
       path: '/settings',
       name: 'settings',
       component: () => import('../views/SettingsPage.vue'),
-      //component: () => import('../views/BasePage.vue'),
-      //children: [{
-      //path: '',
-      //component: () => import('../views/SettingsPage.vue')
-      //}]
-
     }
   ],
 })
