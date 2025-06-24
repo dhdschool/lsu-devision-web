@@ -11,7 +11,7 @@ import BasePage from './views/BasePage.vue';
     <div>
      <!--<HelloWorld msg="You did it!" />-->
       <BasePage/>
-      <nav>
+      <!--<nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
         <RouterLink to="/account">Account</RouterLink>
@@ -23,16 +23,16 @@ import BasePage from './views/BasePage.vue';
         <RouterLink to="/login">Login</RouterLink>
         <RouterLink to="/predictions">Predictions</RouterLink>
         <RouterLink to="/settings">Settings</RouterLink>
-      </nav>
+      </nav>-->
     </div>
   </header>
   <body>
 
   </body>
 
-  <RouterView />
+<!--<RouterView/>-->
 </template>
 
 <style type="text/css">
-.app-bg{background-color:beige;}
+.app-bg{color:#000000}
 </style>

@@ -6,7 +6,7 @@ console.log("Hello World")
   <main>
     <div>
       <h1>"Contact Information"</h1>
-      <!--TODO: Find and post contacts: Email, names, websites?-->
+      <!--TODO: Organize in some sort of table. Gowri will be in GUI Also put email address in the hyperlink for convenience-->
       <p>Math Department Contacts</p>
         <p>Peter Wolenski</p>   
         <a href="mailto:wolenski@math.lsu.edu">Email</a>

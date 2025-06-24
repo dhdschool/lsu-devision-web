@@ -7,7 +7,10 @@ console.log("Hello World")
     <Toolbar/>
     <div class = "columns">
       <div class = "leftColumn"/>
-      <div class = "spacer"/>
+      <div class = "spacer">
+        <!--TODO: Change name and CSS name to something that signifies this is the routerview-->
+        <RouterView />
+      </div>  
       <div class = "rightColumn"/>
     </div>
   </div>
@@ -33,10 +36,13 @@ console.log("Hello World")
   width: 10vw;
   min-height:60vh;
 }
+
 .spacer {
   flex: 1 1 0%;
+  color:#000000;
+  
 }
 .font{
-  background-color: #000000;
+  color: #000000;
 }
 </style>
