@@ -10,6 +10,8 @@ console.log("Hello World")
     <div class = "columns">
       <div class = "leftColumn"/>
       <div class = "spacer">
+        <RouterView/>
+      </div>
 
       <div class = "rightColumn"/>
     </div>
@@ -38,6 +40,8 @@ console.log("Hello World")
 }
 
 .spacer {
+  flex: 1 1 0%;
+  color:#000000;
 
 }
 .font{
