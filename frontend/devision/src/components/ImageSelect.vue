@@ -2,18 +2,15 @@
 import {ref} from 'vue';
 import type {Ref} from 'vue';
 import {BFormFile, BListGroup, BListGroupItem, BImg, BButton} from 'bootstrap-vue-next';
+import type { image } from './Image.vue';
 
-export interface imageListItems{
-    id: number;
-    name: string;
-    url: string
-}
+
 
 const file = ref<null | File>(null);
 // used to distinguish between identical uploads of images. Starts at 0 and increments forever.
 const fileInputKey = ref(0)
 
-const imageItems: Ref<imageListItems[]> = ref([
+const imageItems: Ref<image[]> = ref([
     //{id: 1, text:'Image1.jpg'} Example schema
 ]);
 
