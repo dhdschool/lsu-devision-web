@@ -8,12 +8,12 @@ console.log("Hello World")
   <div class = "bg">
     <Toolbar/>
     <div class = "columns">
-      <div class = "leftColumn"/>
+      <div class = "leftColumn"></div>
       <div class = "spacer">
         <RouterView/>
       </div>
 
-      <div class = "rightColumn"/>
+      <div class = "rightColumn"></div>
     </div>
   </div>
 </template>
