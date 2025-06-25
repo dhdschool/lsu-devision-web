@@ -22,9 +22,9 @@ const AppearanceToggle = ref<Toggle[]> ([
 
 
 const settingsSections = [
-  { id: 1, title: 'Run Time Settings', toggles: runtTimeToggle, toggleMethod: toggleSetting },
-  { id: 2, title: 'Model/Folder Default Settings', toggles: modelFolderToggle, toggleMethod: toggleSetting },
-  { id: 3, title: 'Appearance', toggles: AppearanceToggle, toggleMethod: themeToggle },
+  { id: 1, title: 'Run Time Settings', toggles: runtTimeToggle, toggleMethod: toggleSetting, field: 'checkbox' },
+  { id: 2, title: 'Model/Folder Default Settings', toggles: modelFolderToggle, toggleMethod: toggleSetting, field: 'text' },
+  { id: 3, title: 'Appearance', toggles: AppearanceToggle, toggleMethod: themeToggle, field: 'checkbox' },
 ]
 function toggleSetting(toggles: Toggle[], id: number): Toggle[] {
   return toggles.map(toggle =>
@@ -44,12 +44,15 @@ function themeToggle(toggles: Toggle[], id: number): Toggle[] {
           <div v-for="toggle in section.toggles.value" :key="toggle.id">
             <label>
               <input
-                type="checkbox"
+                :type= section.field
                 :name="'section-' + section.id"
                 :checked="toggle.isActive"
                 @change="section.toggles.value = section.toggleMethod(section.toggles.value, toggle.id)"
-              >
+                >
               {{ toggle.name }}
+              <div v-if="section.field === 'text'">
+                  <button>save</button>
+              </div>
             </label>
           </div>
         </div>
@@ -78,12 +81,32 @@ function themeToggle(toggles: Toggle[], id: number): Toggle[] {
   border: 1px solid #e0e0e0;
 }
 
-.settings-section h2 {
+.settings-section h2 { /*Manages the title of each section*/
   margin-top: 0;
   margin-bottom: 1rem;
-  color: #2c3e50;
+  color: #000000;
   font-size: 1.25rem;
   border-bottom: 1px solid #eee;
   padding-bottom: 0.5rem;
 }
+.settings-section label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #000000;
+  font-size: 1rem;
+}
+.settings-section input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+.settings-section input[type="text"] {
+  color: #100000;           /* Text color */
+  background-color: #ffffff; /* Background color */
+  border: 1px solid #100000; /* Border color */
+  padding: 0.5rem;
+  border-radius: 4px;
+  box-sizing: border-box;    /* Includes padding in width */
+  margin-right: 0.5rem;
+}
+
 </style>
