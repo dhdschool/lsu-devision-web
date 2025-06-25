@@ -3,14 +3,10 @@ import {ref} from 'vue';
 import type {Ref} from 'vue';
 import {BDropdown, BDropdownItem, BImg} from 'bootstrap-vue-next';
 import type { image } from './Image.vue';
-// Don't need interface
-// import type {imageListItems} from './ImageSelect.vue';
 
 defineProps<{
   images: image[];
 }>();
-
-// const images : Ref<imageListItems[]> = ref([]);
 
 </script>
 
