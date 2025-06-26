@@ -8,11 +8,12 @@ console.log("Hello World")
   <div class = "bg">
     <Toolbar/>
     <div class = "columns">
-      <div class = "leftColumn"/>
+      <div class = "leftColumn"></div>
       <div class = "spacer">
-        <router-view></router-view>
+        <RouterView/>
       </div>
-      <div class = "rightColumn"/>
+
+      <div class = "rightColumn"></div>
     </div>
   </div>
 </template>
@@ -37,12 +38,13 @@ console.log("Hello World")
   width: 10vw;
   min-height:60vh;
 }
+
 .spacer {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
+  flex: 1 1 0%;
+  color:#000000;
+
 }
 .font{
-  background-color: #000000;
+  color: #000000;
 }
 </style>

@@ -7,11 +7,11 @@ import { BCard } from 'bootstrap-vue-next';
   <main>
     <div>
       <h1 class="text-center">Contact Information</h1>
-
+      <!--TODO: Organize in some sort of table.--> 
       <div>
-        <b-card
-          border-variant="dark"
-          text-variant="dark"
+        <b-card 
+          border-variant="dark" 
+          text-variant="dark" 
           bg-variant="light"
           title="Math Department Contacts"
           class="text-center"
@@ -26,14 +26,17 @@ import { BCard } from 'bootstrap-vue-next';
       </div>
     </div>
     <div>
-      <b-card
-          border-variant="dark"
-          text-variant="dark"
+
+      <b-card 
+          border-variant="dark" 
+          text-variant="dark" 
+
           bg-variant="light"
           title="GUI team contacts"
           class="text-center"
       >
-        <div >
+        <div >  
+
           <p>Calvin Gavin<br>
           <a href="mailto:cgavin7@lsu.edu">cgavin7@lsu.edu</a>
           </p>
@@ -44,7 +47,8 @@ import { BCard } from 'bootstrap-vue-next';
           <a href="mailto:ddrape6@lsu.edu">ddrape6@lsu.edu</a>
           </p>
           <p>Gowri Sunka<br>
-          <a href="gsunka1@lsu.edu">gsunka1@lsu.edu</a>
+          <a href="gsunka1@lsu.edu">gsunka1@lsu.edu</a> 
+
           </p>
         </div>
       </b-card>
@@ -52,4 +56,6 @@ import { BCard } from 'bootstrap-vue-next';
   </main>
 </template>
 
+
 <style type="css"></style>
+
