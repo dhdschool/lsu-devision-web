@@ -1,4 +1,4 @@
-<script setup lang="ts">    
+<script setup lang="ts">
 console.log("Hello World")
 import { BCard } from 'bootstrap-vue-next';
 </script>
@@ -26,14 +26,17 @@ import { BCard } from 'bootstrap-vue-next';
       </div>
     </div>
     <div>
+
       <b-card 
           border-variant="dark" 
           text-variant="dark" 
+
           bg-variant="light"
           title="GUI team contacts"
           class="text-center"
       >
         <div >  
+
           <p>Calvin Gavin<br>
           <a href="mailto:cgavin7@lsu.edu">cgavin7@lsu.edu</a>
           </p>
@@ -45,6 +48,7 @@ import { BCard } from 'bootstrap-vue-next';
           </p>
           <p>Gowri Sunka<br>
           <a href="gsunka1@lsu.edu">gsunka1@lsu.edu</a> 
+
           </p>
         </div>
       </b-card>
@@ -52,4 +56,6 @@ import { BCard } from 'bootstrap-vue-next';
   </main>
 </template>
 
+
 <style type="css"></style>
+
