@@ -10,11 +10,21 @@ const combinedWeight = computed(() => seedTrayWeight.value + slideWeight.value);
 </script>
 
 <template>
-    <b-list-group>
-        <b-list-group-item>Stats Sidebar</b-list-group-item>
-        <b-list-group-item>Size Class<BFormInput input type ="string" v-model="sizeClass"></BFormInput></b-list-group-item>
-        <b-list-group-item>Seed Tray Weight<BFormInput input type="number" v-model.number="seedTrayWeight"></BFormInput></b-list-group-item>
-        <b-list-group-item>Slide Weight<BFormInput input type ="number" v-model.number="slideWeight"></BFormInput></b-list-group-item>
-        <b-list-group-item>Slide + Tray Weight: {{ combinedWeight }}</b-list-group-item>
-    </b-list-group>
+    <div class="rightSideBar">
+        <b-list-group>
+
+            <b-list-group-item variant="light">Stats Sidebar</b-list-group-item>
+            <b-list-group-item variant="light">Size Class<BFormInput input type="text"   v-model="sizeClass"></BFormInput></b-list-group-item>
+            <b-list-group-item variant="light">Seed Tray Weight<BFormInput input type="number" v-model.number="seedTrayWeight"></BFormInput></b-list-group-item>
+            <b-list-group-item variant="light">Slide Weight<BFormInput input type ="number" v-model.number="slideWeight"></BFormInput></b-list-group-item>
+            <b-list-group-item variant="light">Slide + Tray Weight: {{ combinedWeight }}</b-list-group-item>
+        </b-list-group>
+    </div>
 </template>
+
+<style type ="css">
+    .rightSideBar .list-group-item {
+        color: #000000;
+        background-color: transparent !important;
+    }
+</style>

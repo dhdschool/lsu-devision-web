@@ -40,8 +40,9 @@ function selectMore():void {console.log("select more pressed")}
   
     <BButton pill @click="exportPrediciton">Export</BButton>
     <!--property sidebar on the right-->
+    <div class = rightSidebar>
     <stats-sidebar></stats-sidebar>
-  
+    </div>
     <!--raw image-->
     <file-select></file-select>
     <!--Predicted image-->
@@ -61,9 +62,18 @@ function selectMore():void {console.log("select more pressed")}
 
 <style type="css">
 
-.leftSidebar{}
+.leftSidebar{
+  width: 10vw;
+  min-height:60vh;
+  position: absolute; left: 0px; top: 37px;
+}
 
-.rightSidebar{}
+.rightSidebar{
+  
+  width: 10vw;
+  min-height:60vh;
+  position: absolute; right: 0px; top: 37px;
+}
 
 .progressBar{}
 
