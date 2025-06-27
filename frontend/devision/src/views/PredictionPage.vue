@@ -20,37 +20,42 @@ function previous():void {console.log("previous pressed")}
 //image file name display logic
 
 //property entry logic
+
+function selectMore():void {console.log("select more pressed")} 
 </script>
 
 <template>
   <main>
-  <h1>Prediction page</h1> 
-  <p>Under Construction</p>
+    <h1>Prediction page</h1> 
+    <p>Under Construction</p>
  
-  <!--image name sidebar on left-->
+    <!--image name sidebar on left-->
 
-  <!--create dropdown list for model selection. Model selection logic can come later-->
-  <DropdownList :items="dropDownListItems"/>
+    <!--create dropdown list for model selection. Model selection logic can come later-->
+    <DropdownList :items="dropDownListItems"/>
 
-  <BButton pill @click = "predict">Prediction</BButton>
+    <BButton pill @click = "predict">Prediction</BButton>
   
-  <BButton pill @click = "clear">Clear</BButton>
+    <BButton pill @click = "clear">Clear</BButton>
   
-  <BButton pill @click="exportPrediciton">Export</BButton>
-  <!--property sidebar on the right-->
+    <BButton pill @click="exportPrediciton">Export</BButton>
+    <!--property sidebar on the right-->
+    <stats-sidebar></stats-sidebar>
   
-  <!--raw image-->
-  <file-select></file-select>
-  <!--Predicted image-->
+    <!--raw image-->
+    <file-select></file-select>
+    <!--Predicted image-->
    
-  <!--previous button-->
-  <BButton pill @click="previous">Previous</BButton>
-  <!--decorative oyster image-->
-  <BButton pill @click="next">Next</BButton>
+    <!--previous button-->
+    <BButton pill @click="previous">Previous</BButton>
+    <!--decorative oyster image-->
+    <BButton pill @click="next">Next</BButton>
 
-  <!--progress bar-->
-  <BProgress :value="10"/>
-  
+    <!--progress bar-->
+    <BProgress :value="10"/>
+
+
+    <BButton pill @click="selectMore">Select more images</BButton>
   </main>
 </template>
 
