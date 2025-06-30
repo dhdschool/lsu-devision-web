@@ -51,7 +51,7 @@ function themeToggle(toggles: Toggle[], id: number): Toggle[] {
                 >
               {{ toggle.name }}
               <div v-if="section.field === 'text'">
-                  <button>save</button>
+                  <button class="save-button">save</button>
               </div>
             </label>
           </div>
@@ -60,53 +60,5 @@ function themeToggle(toggles: Toggle[], id: number): Toggle[] {
 </template>
 
 <style scoped>
-.settings-page {
-  width: 100%;
-  min-height: 100%;
-  padding: 2rem;
-}
-.settings-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.settings-section {
-  background: white;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e0e0e0;
-}
-
-.settings-section h2 { /*Manages the title of each section*/
-  margin-top: 0;
-  margin-bottom: 1rem;
-  color: #000000;
-  font-size: 1.25rem;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 0.5rem;
-}
-.settings-section label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #000000;
-  font-size: 1rem;
-}
-.settings-section input[type="checkbox"] {
-  margin-right: 0.5rem;
-}
-
-.settings-section input[type="text"] {
-  color: #100000;           /* Text color */
-  background-color: #ffffff; /* Background color */
-  border: 1px solid #100000; /* Border color */
-  padding: 0.5rem;
-  border-radius: 4px;
-  box-sizing: border-box;    /* Includes padding in width */
-  margin-right: 0.5rem;
-}
 
 </style>
