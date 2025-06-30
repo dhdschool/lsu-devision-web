@@ -34,13 +34,19 @@ function selectMore():void {console.log("select more pressed")}
     <!--create dropdown list for model selection. Model selection logic can come later-->
     <DropdownList :items="dropDownListItems"/>
 
+    <div id="predictButton">
     <BButton pill @click = "predict">Prediction</BButton>
-  
+    </div>
+
+    <div id="clearButton">
     <BButton pill @click = "clear">Clear</BButton>
-  
+    </div>
+
+    <div id="exportButton">
     <BButton pill @click="exportPrediciton">Export</BButton>
+    </div>
     <!--property sidebar on the right-->
-    <div class = rightSidebar>
+    <div id= rightSidebar>
     <stats-sidebar></stats-sidebar>
     </div>
     <!--raw image-->
@@ -48,34 +54,65 @@ function selectMore():void {console.log("select more pressed")}
     <!--Predicted image-->
    
     <!--previous button-->
+
+    <div id="clearButton">
     <BButton pill @click="previous">Previous</BButton>
+    </div>
     <!--decorative oyster image-->
+
+    <div id="clearButton">
     <BButton pill @click="next">Next</BButton>
-
+    </div>
     <!--progress bar-->
+    
+    <div id="progressBar">
     <BProgress :value="10"/>
+    </div>
 
-
+    <div id="selectMoreButton">
     <BButton pill @click="selectMore">Select more images</BButton>
+    </div>
+
   </main>
 </template>
 
 <style type="css">
 
-.leftSidebar{
+#leftSidebar{
   width: 10vw;
   min-height:60vh;
   position: absolute; left: 0px; top: 37px;
 }
 
-.rightSidebar{
-  
+#rightSidebar{
   width: 10vw;
   min-height:60vh;
   position: absolute; right: 0px; top: 37px;
 }
 
-.progressBar{}
+#progressBar{}
 
+#exportButton{
+  position: absolute;  right: 00 px; top: 57px; 
+}
 
+#predictButton{
+  position: absolute;  right: 0 px; top: 37px; 
+}
+
+#clearButton{
+  position: absolute;  right: 25 px; top: 57px; 
+}
+
+#previousButton{
+  position: absolute;  right: 25 px; top: 57px; 
+}
+
+#nextButton{
+  position: absolute;  right: 25 px; top: 57px; 
+}
+
+#selectMoreButton{
+  position: absolute;  right: 25 px; top: 57px; 
+}
 </style>
