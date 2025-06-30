@@ -5,7 +5,7 @@ import { ref } from 'vue';
 const markdownIt = new MarkdownIt({html: true});
 const filePath = '/Public/Home-Page.md';
 const renderedHtml = ref('');
-const imagePath = '/public/oyster farmer.png'
+const imagePath = '/public/IMG_7208_copy.JPG'
 
 fetch(filePath)
   .then(response => response.text())
