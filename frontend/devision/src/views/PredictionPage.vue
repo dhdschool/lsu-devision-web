@@ -32,47 +32,51 @@ function selectMore():void {console.log("select more pressed")}
     <!--image name sidebar on left-->
 
     <!--create dropdown list for model selection. Model selection logic can come later-->
-    <DropdownList :items="dropDownListItems"/>
+    <div class="section" id="top">
+      <DropdownList :items="dropDownListItems"/>
+      <div id="predictButton">
+        <BButton pill @click = "predict">Prediction</BButton>
+      </div>
 
-    <div id="predictButton">
-    <BButton pill @click = "predict">Prediction</BButton>
-    </div>
+      <div id="clearButton">
+        <BButton pill @click = "clear">Clear</BButton>
+      </div>
 
-    <div id="clearButton">
-    <BButton pill @click = "clear">Clear</BButton>
-    </div>
-
-    <div id="exportButton">
-    <BButton pill @click="exportPrediciton">Export</BButton>
+      <div id="exportButton">
+        <BButton pill @click="exportPrediciton">Export</BButton>
+      </div>
     </div>
     <!--property sidebar on the right-->
     <div id= rightSidebar>
     <stats-sidebar></stats-sidebar>
     </div>
     <!--raw image-->
-    <file-select></file-select>
+    <div class="section">
+      <div class="box"></div>
     <!--Predicted image-->
-   
+      <div class="box"></div>
     <!--previous button-->
-
-    <div id="clearButton">
-    <BButton pill @click="previous">Previous</BButton>
     </div>
+
+    <div class="section">
+      <div id="previousButton">
+        <BButton pill @click="previous">Previous</BButton>
+      </div>
     <!--decorative oyster image-->
 
-    <div id="clearButton">
-    <BButton pill @click="next">Next</BButton>
-    </div>
+      <div id="nextButton">
+        <BButton pill @click="next">Next</BButton>
+      </div>
     <!--progress bar-->
+    </div>
     
     <div id="progressBar">
-    <BProgress :value="10"/>
+        <BProgress :value="10"/>
     </div>
-
+    
     <div id="selectMoreButton">
-    <BButton pill @click="selectMore">Select more images</BButton>
+      <BButton pill @click="selectMore">Select more images</BButton>
     </div>
-
   </main>
 </template>
 
@@ -90,29 +94,53 @@ function selectMore():void {console.log("select more pressed")}
   position: absolute; right: 0px; top: 37px;
 }
 
-#progressBar{}
+#progressBar{} 
 
-#exportButton{
-  position: absolute;  right: 00 px; top: 57px; 
+.section{
+  display: flex
 }
 
+#top{
+  margin: 10px auto;
+  align-items: center;
+  justify-content: space-around;
+}
+
+#bottom{
+  width: auto;
+  align-items:stretch;
+  justify-content:space-between
+}
+#modelSelect{
+  margin: 5px;
+}
 #predictButton{
-  position: absolute;  right: 0 px; top: 37px; 
+  margin: 5px;
 }
 
 #clearButton{
-  position: absolute;  right: 25 px; top: 57px; 
+  margin: 5px;
+}
+
+#exportButton{  margin: 5px;
 }
 
 #previousButton{
-  position: absolute;  right: 25 px; top: 57px; 
+  align-items: flex-start;
 }
 
 #nextButton{
-  position: absolute;  right: 25 px; top: 57px; 
+  align-items: flex-end;
 }
 
 #selectMoreButton{
-  position: absolute;  right: 25 px; top: 57px; 
+  position: relative; 
+}
+
+.box {
+  width:200px;
+  height: 200px;
+  background-color: aqua;
+  margin: 10px
 }
 </style>
