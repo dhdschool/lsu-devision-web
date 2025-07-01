@@ -1,39 +1,72 @@
-/* base page */
-.bg{
-  min-height: 100vh;
-  background-color: #ffffff /* white */;
+/*css global variables*/
+/* 🌞 Light Theme */
+.theme-light {
+  --color-white: #ffffff;           /* Backgrounds, inputs, sections */
+  --color-black: #000000;           /* Text and labels */
+  --color-left-col: #eef8eb;        /* Left column background */
+  --color-right-col: #fdfce9;       /* Right column background */
+  --color-dark-gray: #343a40;       /* Card border & text */
+  --color-link-blue: #007bff;       /* Hyperlinks */
+  --color-light-gray: #f0f0f0;      /* Button background */
+  --color-hover-gray: #e0e0e0;      /* Button hover */
+  --color-card-bg: #f8f9fa;         /* Card background */
+  --color-border-light: #eee;       /* Section dividers */
+  --color-button: #000000;          /* Button text color */
 }
-.columns{
+
+/* 🌙 Dark Theme */
+.theme-dark {
+  --color-white: #181818;           /* Backgrounds, inputs, sections */
+  --color-black: #f8f8f8;           /* Text and labels */
+  --color-left-col: #2e3d2f;        /* Left column background */
+  --color-right-col: #44432c;       /* Right column background */
+  --color-dark-gray: #cccccc;       /* Card border & text */
+  --color-link-blue: #66aaff;       /* Hyperlinks */
+  --color-light-gray: #444;         /* Button background */
+  --color-hover-gray: #555;         /* Button hover */
+  --color-card-bg: #222;            /* Card background */
+  --color-border-light: #666;       /* Section dividers */
+  --color-button: #f8f8f8;          /* Button text color */
+}
+.bg {
+  min-height: 100vh;
+  background-color: var(--color-white);
+}
+
+.columns {
   display: flex;
   width: 100%;
   min-height: 100vh;
 }
-.leftColumn{
-  background-color: #eef8eb;
+
+.leftColumn {
+  background-color: var(--color-left-col);
   width: 10vw;
-  min-height:60vh;
+  min-height: 60vh;
 }
-.rightColumn{
-  background-color: #fdfce9;
+
+.rightColumn {
+  background-color: var(--color-right-col);
   width: 10vw;
-  min-height:60vh;
+  min-height: 60vh;
 }
+
 .spacer {
   flex: 1 1 0%;
-  color:#000000;
-
-}
-.font{
-  color: #000000;
+  color: var(--color-black);
 }
 
-/*settings page*/
+.font {
+  color: var(--color-black);
+}
 
+/* Settings Page */
 .settings-page {
   width: 100%;
   min-height: 100%;
   padding: 2rem;
 }
+
 .settings-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -43,75 +76,83 @@
 }
 
 .settings-section {
-  background: white;
+  background: var(--color-white);
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e0e0e0;
-  color: #000000;
+  border: 1px solid var(--color-hover-gray);
+  color: var(--color-black);
 }
 
-.settings-section h2 { /*Manages the title of each section*/
+.settings-section h2 {
   margin-top: 0;
   margin-bottom: 1rem;
   font-size: 1.25rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border-light);
   padding-bottom: 0.5rem;
 }
+
 .settings-section label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #000000;
+  color: var(--color-black);
   font-size: 1rem;
 }
+
 .settings-section input[type="checkbox"] {
   margin-right: 0.5rem;
 }
 
 .settings-section input[type="text"] {
-  color: #100000;           /* Text color */
-  background-color: #ffffff; /* Background color */
-  border: 1px solid #100000; /* Border color */
+  color: var(--color-black);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black);
   padding: 0.5rem;
   border-radius: 4px;
-  box-sizing: border-box;    /* Includes padding in width */
+  box-sizing: border-box;
   margin-right: 0.5rem;
 }
+
 .save-button {
-  background-color: #f0f0f0;
-  color: #000000;
+  background-color: var(--color-light-gray);
+  color: var(--color-button);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
 }
+
 .save-button:hover {
-  background-color: #e0e0e0;
+  background-color: var(--color-hover-gray);
 }
+
 /* Home Page */
-main{
+main {
   text-align: center;
-  color : #100000;
+  color: var(--color-black);
   padding-bottom: 1rem;
 }
-.main-text{
+
+.main-text {
   text-align: left;
-  color : #100000;
+  color: var(--color-black);
 }
+
 .image {
   width: 100%;
   bottom: 0;
 }
+
 /* Contact Page */
 .contact-card {
-  background-color: #f8f9fa;
-  border: 2px solid #343a40;
-  color: #343a40;
+  background-color: var(--color-card-bg);
+  border: 2px solid var(--color-dark-gray);
+  color: var(--color-dark-gray);
   padding: 1.5rem;
   border-radius: 0.5rem;
   text-align: center;
-  max-width: 100%;
-  margin: auto;
+  width: 100%;
+  margin: 0 auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -126,10 +167,36 @@ main{
 }
 
 .card-content a {
-  color: #007bff;
+  color: var(--color-link-blue);
   text-decoration: none;
 }
 
 .card-content a:hover {
   text-decoration: underline;
+}
+
+/* Help Page */
+main {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.info-card {
+  background-color: var(--color-card-bg);
+  border: 2px solid var(--color-dark-gray);
+  color: var(--color-dark-gray);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
