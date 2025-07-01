@@ -3,7 +3,8 @@ import { BImg, BButton, BProgress } from 'bootstrap-vue-next';
 
 //Model selection logic
 const dropDownListItems = ["Option 1", "Option 2", "Option 3"]
-console.log("Hello World")
+
+const loadedImages = ["Option 1", "Option 2", "Option 3"]
 
 //Prediction Logic
 function predict():void {console.log("Prediction button pressed")} 
@@ -47,8 +48,13 @@ function selectMore():void {console.log("select more pressed")}
       </div>
     </div>
     <!--property sidebar on the right-->
+    
+    <div id = leftSidebar>
+      <image-sidebar :list-items="loadedImages"></image-sidebar>    
+    </div>
+    
     <div id = rightSidebar>
-    <stats-sidebar></stats-sidebar>
+      <stats-sidebar></stats-sidebar>
     </div>
     <!--raw image-->
     <div id="middle">
@@ -83,22 +89,32 @@ function selectMore():void {console.log("select more pressed")}
 
 <style type="css">
 
+.section{
+  display: flex
+}
+
+.box {
+  width:200px;
+  height: 200px;
+  background-color: aqua;
+  margin: 10px
+}
+
+#progressBar{
+
+} 
+
 #leftSidebar{
   width: 10vw;
   min-height:60vh;
   position: absolute; left: 0px; top: 37px;
+  
 }
 
 #rightSidebar{
   width: 10vw;
   min-height:60vh;
   position: absolute; right: 0px; top: 37px;
-}
-
-#progressBar{} 
-
-.section{
-  display: flex
 }
 
 #top{
@@ -120,9 +136,11 @@ function selectMore():void {console.log("select more pressed")}
   justify-content:space-between
   
 }
+
 #modelSelect{
   margin: 5px;
 }
+
 #predictButton{
   margin: 5px;
 }
@@ -147,13 +165,6 @@ function selectMore():void {console.log("select more pressed")}
   width: 10vw;
   margin-top: 10px;
   position: absolute; left: 0px
-}
-
-.box {
-  width:200px;
-  height: 200px;
-  background-color: aqua;
-  margin: 10px
 }
 
 #oyster{
