@@ -1,0 +1,87 @@
+.bg{
+  min-height: 100vh;
+  background-color: #0c0c0c /* white */;
+}
+.columns{
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+.leftColumn{
+  background-color: #0f2801;
+  width: 10vw;
+  min-height:60vh;
+}
+.rightColumn{
+  background-color: #300133;
+  width: 10vw;
+  min-height:60vh;
+}
+
+.spacer {
+  flex: 1 1 0%;
+  color: #fdfbfb;
+
+}
+.font{
+  color: #fcfcfc;
+}
+.settings-page {
+  width: 100%;
+  min-height: 100%;
+  padding: 2rem;
+}
+.settings-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.settings-section {
+  background: #0c0c0c;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(222, 210, 210, 0.1);
+  border: 1px solid #0c0c0b;
+  color: #fcfcfc;
+}
+
+.settings-section h2 { /*Manages the title of each section*/
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  border-bottom: 1px solid #0c0c0b;
+  padding-bottom: 0.5rem;
+}
+.settings-section label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #fcfcfc;
+  font-size: 1rem;
+}
+.settings-section input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+.settings-section input[type="text"] {
+  color: #fcfcfc;           /* Text color */
+  background-color: #0c0c0c; /* Background color */
+  border: 1px solid #fcfcfc; /* Border color */
+  padding: 0.5rem;
+  border-radius: 4px;
+  box-sizing: border-box;    /* Includes padding in width */
+  margin-right: 0.5rem;
+}
+.save-button {
+  background-color: #0c0c0c;
+  color: #fdfbfb;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.save-button:hover {
+  background-color: #0c0c0c;
+}
