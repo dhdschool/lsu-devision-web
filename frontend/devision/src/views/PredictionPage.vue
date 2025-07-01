@@ -47,22 +47,23 @@ function selectMore():void {console.log("select more pressed")}
       </div>
     </div>
     <!--property sidebar on the right-->
-    <div id= rightSidebar>
+    <div id = rightSidebar>
     <stats-sidebar></stats-sidebar>
     </div>
     <!--raw image-->
-    <div class="section">
+    <div id="middle">
       <div class="box"></div>
     <!--Predicted image-->
       <div class="box"></div>
     <!--previous button-->
     </div>
 
-    <div class="section">
+    <div id="bottom">
       <div id="previousButton">
         <BButton pill @click="previous">Previous</BButton>
       </div>
     <!--decorative oyster image-->
+      <div id="oyster"></div>
 
       <div id="nextButton">
         <BButton pill @click="next">Next</BButton>
@@ -106,10 +107,18 @@ function selectMore():void {console.log("select more pressed")}
   justify-content: space-around;
 }
 
+#middle{
+  margin: 10px;
+  align-items: center;
+  justify-content: space-around;
+  display: flex
+}
+
 #bottom{
   width: auto;
-  align-items:stretch;
+  display: flex;
   justify-content:space-between
+  
 }
 #modelSelect{
   margin: 5px;
@@ -122,19 +131,22 @@ function selectMore():void {console.log("select more pressed")}
   margin: 5px;
 }
 
-#exportButton{  margin: 5px;
+#exportButton{  
+  margin: 5px;
 }
 
 #previousButton{
-  align-items: flex-start;
+  margin: 25px
 }
 
 #nextButton{
-  align-items: flex-end;
+  margin: 25px
 }
 
 #selectMoreButton{
-  position: relative; 
+  width: 10vw;
+  margin-top: 10px;
+  position: absolute; left: 0px
 }
 
 .box {
@@ -143,4 +155,12 @@ function selectMore():void {console.log("select more pressed")}
   background-color: aqua;
   margin: 10px
 }
+
+#oyster{
+  width: 100px;
+  height: 100px;
+  background-color: yellowgreen;
+  margin: 10px;
+}
+
 </style>
