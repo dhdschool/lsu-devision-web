@@ -12,7 +12,6 @@ const combinedWeight = computed(() => seedTrayWeight.value + slideWeight.value);
 <template>
     <div class="rightSideBar">
         <b-list-group>
-
             <b-list-group-item variant="light">Stats Sidebar</b-list-group-item>
             <b-list-group-item variant="light">Size Class<BFormInput input type="text"   v-model="sizeClass"></BFormInput></b-list-group-item>
             <b-list-group-item variant="light">Seed Tray Weight<BFormInput input type="number" v-model.number="seedTrayWeight"></BFormInput></b-list-group-item>
