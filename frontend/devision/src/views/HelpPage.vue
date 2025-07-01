@@ -1,40 +1,23 @@
-<script setup lang="ts">    
-console.log("Hello World")
-import { BCard } from 'bootstrap-vue-next';
+<script setup lang="ts">
+
+const Cards = [
+  { id: 1, title: 'Predictions', content: 'Text about Predictions functionality' },
+  { id: 2, title: 'Settings', content: 'Text about functionality' },
+  { id: 3, title: 'Account', content: 'Text about functionality' },
+]
 </script>
 
 <template>
   <main>
-
-  <b-card 
-    border-variant="dark" 
-    text-variant="dark" 
-    bg-variant="light"
-    title="Predictions"
-    class="text-center">
-
-    <p>Text about Predictions functionality</p>
-  </b-card> 
-
-  <b-card 
-    border-variant="dark" 
-    text-variant="dark" 
-    bg-variant="light"
-    title="Settings"
-    class="text-center">
-    
-    <p>Text about functionality</p>
-  </b-card>  
-
-  <b-card 
-    border-variant="dark" 
-    text-variant="dark" 
-    bg-variant="light"
-    title="Account"
-    class="text-center">
-    
-    <p>Text about functionality</p>
-  </b-card> 
-
+    <div v-for="card in Cards" :key="card.id" class="info-card">
+      <h2 class="card-title">{{ card.title }}</h2>
+      <p>{{ card.content }}</p>
+    </div>
   </main>
 </template>
+
+
+
+<style scoped>
+
+</style>
