@@ -1,10 +1,14 @@
 <script setup lang="ts">    
 import { BImg, BButton, BProgress } from 'bootstrap-vue-next';
+import { ref } from 'vue';
 
 //Model selection logic
 const dropDownListItems = ["Option 1", "Option 2", "Option 3"]
 
+const currentImageIndex = ref(0);
 const loadedImages = ["Option 1", "Option 2", "Option 3"]
+
+const selectedImage = ref<string>(loadedImages[0]);
 
 //Prediction Logic
 function predict():void {console.log("Prediction button pressed")} 
@@ -13,9 +17,28 @@ function clear():void {console.log("clear button pressed")}
 //Export logic
 function exportPrediciton():void {console.log("export pressed")} 
 //Next logic
-function next():void {console.log("Next pressed")} 
+function next():void {
+  if (currentImageIndex.value < loadedImages.length - 1){
+    currentImageIndex.value++;
+  } else{
+    currentImageIndex.value = 0;
+  }
+  updateSelectedImage()
+} 
 //Previous logic
-function previous():void {console.log("previous pressed")} 
+function previous():void {
+  if (currentImageIndex.value > 0) {
+    currentImageIndex.value--;
+  } else{
+    currentImageIndex.value = loadedImages.length - 1;
+  }
+  updateSelectedImage()
+} 
+
+function updateSelectedImage() {
+  selectedImage.value = loadedImages[currentImageIndex.value];
+
+}
 //Progress bar function
 
 //image file name display logic
@@ -50,7 +73,7 @@ function selectMore():void {console.log("select more pressed")}
     <!--property sidebar on the right-->
     
     <div id = leftSidebar>
-      <image-sidebar :list-items="loadedImages"></image-sidebar>    
+      <image-sidebar :list-items="loadedImages" :selected="selectedImage"></image-sidebar>    
     </div>
     
     <div id = rightSidebar>
@@ -108,7 +131,7 @@ function selectMore():void {console.log("select more pressed")}
   width: 10vw;
   min-height:60vh;
   position: absolute; left: 0px; top: 37px;
-  
+
 }
 
 #rightSidebar{
