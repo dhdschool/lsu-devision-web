@@ -6,7 +6,7 @@ import { ref } from 'vue';
 const dropDownListItems = ["Option 1", "Option 2", "Option 3"]
 
 const currentImageIndex = ref(0);
-const loadedImages = ["Option 1", "Option 2", "Option 3"]
+const loadedImages = ["Option 1", "Big big chungus big chungus big chungus", "Option 3"]
 
 const selectedImage = ref<string>(loadedImages[0]);
 
@@ -37,7 +37,6 @@ function previous():void {
 
 function updateSelectedImage() {
   selectedImage.value = loadedImages[currentImageIndex.value];
-
 }
 //Progress bar function
 
