@@ -16,7 +16,7 @@ defineProps<{
             :variant="item === selected ? 'primary' : 'light'"
             class="sidebar-item"
             >
-            {{ item }}
+            {{ item.length > 12 ? item.slice(0,12) + '...' : item }}
             </b-list-group-item>
         </b-list-group>
     </div>
