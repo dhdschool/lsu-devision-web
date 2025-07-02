@@ -1,5 +1,6 @@
-<script setup lang="ts">    
+<script setup lang="ts">
 import { BImg, BButton, BProgress } from 'bootstrap-vue-next';
+import ImageFrame from "@/components/ImageFrame.vue";
 
 //Model selection logic
 const dropDownListItems = ["Option 1", "Option 2", "Option 3"]
@@ -7,29 +8,29 @@ const dropDownListItems = ["Option 1", "Option 2", "Option 3"]
 const loadedImages = ["Option 1", "Option 2", "Option 3"]
 
 //Prediction Logic
-function predict():void {console.log("Prediction button pressed")} 
+function predict():void {console.log("Prediction button pressed")}
 //Clear logic
-function clear():void {console.log("clear button pressed")} 
+function clear():void {console.log("clear button pressed")}
 //Export logic
-function exportPrediciton():void {console.log("export pressed")} 
+function exportPrediciton():void {console.log("export pressed")}
 //Next logic
-function next():void {console.log("Next pressed")} 
+function next():void {console.log("Next pressed")}
 //Previous logic
-function previous():void {console.log("previous pressed")} 
+function previous():void {console.log("previous pressed")}
 //Progress bar function
 
 //image file name display logic
 
 //property entry logic
 
-function selectMore():void {console.log("select more pressed")} 
+function selectMore():void {console.log("select more pressed")}
 </script>
 
 <template>
   <main>
-    <h1>Prediction page</h1> 
+    <h1>Prediction page</h1>
     <p>Under Construction</p>
- 
+
     <!--image name sidebar on left-->
 
     <!--create dropdown list for model selection. Model selection logic can come later-->
@@ -48,19 +49,23 @@ function selectMore():void {console.log("select more pressed")}
       </div>
     </div>
     <!--property sidebar on the right-->
-    
+
     <div id = leftSidebar>
-      <image-sidebar :list-items="loadedImages"></image-sidebar>    
+      <image-sidebar :list-items="loadedImages"></image-sidebar>
     </div>
-    
+
     <div id = rightSidebar>
       <stats-sidebar></stats-sidebar>
     </div>
     <!--raw image-->
     <div id="middle">
-      <div class="box"></div>
+      <div class="box">
+        <ImageFrame></ImageFrame>
+      </div>
     <!--Predicted image-->
-      <div class="box"></div>
+      <div class="box">
+        <ImageFrame placeholder-text="Waiting on Prediction"></ImageFrame>
+      </div>
     <!--previous button-->
     </div>
 
@@ -76,11 +81,11 @@ function selectMore():void {console.log("select more pressed")}
       </div>
     <!--progress bar-->
     </div>
-    
+
     <div id="progressBar">
         <BProgress :value="10"/>
     </div>
-    
+
     <div id="selectMoreButton">
       <BButton pill @click="selectMore">Select more images</BButton>
     </div>
@@ -102,13 +107,13 @@ function selectMore():void {console.log("select more pressed")}
 
 #progressBar{
 
-} 
+}
 
 #leftSidebar{
   width: 10vw;
   min-height:60vh;
   position: absolute; left: 0px; top: 37px;
-  
+
 }
 
 #rightSidebar{
@@ -134,7 +139,7 @@ function selectMore():void {console.log("select more pressed")}
   width: auto;
   display: flex;
   justify-content:space-between
-  
+
 }
 
 #modelSelect{
@@ -149,7 +154,7 @@ function selectMore():void {console.log("select more pressed")}
   margin: 5px;
 }
 
-#exportButton{  
+#exportButton{
   margin: 5px;
 }
 
