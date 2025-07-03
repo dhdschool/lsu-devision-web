@@ -1,93 +1,143 @@
 <script setup lang="ts">
 import { BImg, BButton, BProgress } from 'bootstrap-vue-next';
 import ImageFrame from "@/components/ImageFrame.vue";
+import DropdownList from "@/components/DropdownList.vue";
+import ImageSidebar from "@/components/ImageSidebar.vue";
+import StatsSidebar from "@/components/StatsSidebar.vue";
+import { ref } from 'vue';
 
-//Model selection logic
-const dropDownListItems = ["Option 1", "Option 2", "Option 3"]
+// Model selection
+const dropDownListItems = ["Option 1", "Option 2", "Option 3"];
+// Selected images
 
-const loadedImages = ["Option 1", "Option 2", "Option 3"]
+interface Image {
+  filename: string;
+  index: number;
+  url: string;
+}
+//Images will be loaded into this array
+const loadedImages = ref<Image[]>([]);
+//Index for accessing the array
+const currentIndex = ref(0)
+const storeIndex = ref(0)
+//Input variable for file uploading, will be set to null when no file is uploaded
+const fileInput = ref<HTMLInputElement | null>(null);
+let index: number = 1;
 
-//Prediction Logic
-function predict():void {console.log("Prediction button pressed")}
-//Clear logic
-function clear():void {console.log("clear button pressed")}
-//Export logic
-function exportPrediciton():void {console.log("export pressed")}
-//Next logic
-function next():void {console.log("Next pressed")}
-//Previous logic
-function previous():void {console.log("previous pressed")}
-//Progress bar function
+function handleInput() {
+  const files = fileInput.value?.files;
+  if (files) {
+    for (const file of files) {
+      const url = URL.createObjectURL(file);
+      loadedImages.value.push({filename: file.name, index: storeIndex.value,url: url});
+      storeIndex.value++;
+    }
+  }
+}
 
-//image file name display logic
+const canSubmit = ref(false);
+//show submit button when called
+function showSubmit(): void {
+  canSubmit.value = true;
+}
 
-//property entry logic
+// Popup trigger for ImageSelect component
+const showImageSelect = ref(false);
 
-function selectMore():void {console.log("select more pressed")}
+// Prediction actions
+function predict(): void {
+  console.log("Prediction button pressed");
+}
+
+// Prediction actions
+function clear(): void {
+  loadedImages.value = [];
+  currentIndex.value = 0;
+  console.log("Clear button pressed");
+}
+
+function exportPrediciton(): void {
+  console.log("Export pressed");
+}
+
+// Image navigation
+function next(): void {
+  if (currentIndex.value < loadedImages.value.length - 1) currentIndex.value++;
+}
+
+function previous(): void {
+  if (currentIndex.value > 0) currentIndex.value--;
+}
+
+// ImageSelect dialog handlers
+function selectMore(): void {
+  console.log('Does nothing');
+}
+
+function closeImageSelect(): void {
+  showImageSelect.value = false;
+}
 </script>
 
 <template>
   <main>
-    <h1>Prediction page</h1>
+    <h1>Prediction Page</h1>
     <p>Under Construction</p>
-
-    <!--image name sidebar on left-->
-
-    <!--create dropdown list for model selection. Model selection logic can come later-->
+    <!-- Model Selection and Actions -->
     <div class="section" id="top">
-      <DropdownList :items="dropDownListItems"/>
+      <DropdownList :items="dropDownListItems" />
       <div id="predictButton">
-        <BButton pill @click = "predict">Prediction</BButton>
+        <BButton pill @click="predict">Prediction</BButton>
       </div>
-
       <div id="clearButton">
-        <BButton pill @click = "clear">Clear</BButton>
+        <BButton pill @click="clear">Clear</BButton>
       </div>
-
       <div id="exportButton">
         <BButton pill @click="exportPrediciton">Export</BButton>
       </div>
     </div>
-    <!--property sidebar on the right-->
 
-    <div id = leftSidebar>
-      <image-sidebar :list-items="loadedImages"></image-sidebar>
+    <!-- Sidebars -->
+    <div id="leftSidebar">
+      <!-- < ImageSidebar :list-items="loadedImages" />-->
     </div>
 
-    <div id = rightSidebar>
-      <stats-sidebar></stats-sidebar>
+    <div id="rightSidebar">
+      <StatsSidebar />
     </div>
-    <!--raw image-->
+
+    <!-- Image Preview Frame -->
     <div id="middle">
       <div class="box">
-        <ImageFrame></ImageFrame>
+        <ImageFrame :imageSrc="loadedImages[currentIndex.valueOf()]?.url" />
       </div>
-    <!--Predicted image-->
       <div class="box">
-        <ImageFrame placeholder-text="Waiting on Prediction"></ImageFrame>
+        <ImageFrame placeholder-text="Waiting on Prediction" />
       </div>
-    <!--previous button-->
     </div>
 
+    <!-- Navigation Controls -->
     <div id="bottom">
       <div id="previousButton">
         <BButton pill @click="previous">Previous</BButton>
       </div>
-    <!--decorative oyster image-->
       <div id="oyster"></div>
-
       <div id="nextButton">
         <BButton pill @click="next">Next</BButton>
       </div>
-    <!--progress bar-->
     </div>
 
+    <!-- Progress Bar -->
     <div id="progressBar">
-        <BProgress :value="10"/>
+      <BProgress :value="(currentIndex + 1) / loadedImages.length * 100 || 0" />
     </div>
 
+    <!-- Select More Button -->
     <div id="selectMoreButton">
-      <BButton pill @click="selectMore">Select more images</BButton>
+      <input type="file" id="input" ref="fileInput" multiple @click="showSubmit">
+      <div v-if="canSubmit === true">
+        <button @click="handleInput">Submit</button>
+      </div>
     </div>
   </main>
 </template>
