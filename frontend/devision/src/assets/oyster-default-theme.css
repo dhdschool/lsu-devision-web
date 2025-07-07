@@ -200,3 +200,29 @@ main {
   font-size: 1.5rem;
   font-weight: 600;
 }
+/* Predictions Page */
+/*Image Frame*/
+.box {
+  width:200px;
+  height: 200px;
+  background-color: var(--color-white);
+  margin: 10px;
+}
+.image-frame {
+  border-radius: 20px;
+  border: 3px solid var(--color-dark-gray);           /* Light gray border around the frame */
+  padding: 10px;                    /* Padding inside the frame */
+  width: 300px;                     /* Fixed width */
+  height: 300px;                    /* Fixed height */
+  display: flex;                    /* Flexbox layout */
+  justify-content: center;         /* Center horizontally */
+  align-items: center;             /* Center vertically */
+
+}
+
+/* Style for the image to fit nicely inside the frame */
+.image-frame img {
+  max-width: 100%;                 /* Ensure image doesn't overflow width */
+  max-height: 100%;               /* Ensure image doesn't overflow height */
+  object-fit: contain;            /* Preserve aspect ratio and show entire image */
+}
