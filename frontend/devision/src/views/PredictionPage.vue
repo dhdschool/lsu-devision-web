@@ -148,13 +148,6 @@ function closeImageSelect(): void {
   display: flex
 }
 
-.box {
-  width:200px;
-  height: 200px;
-  background-color: aqua;
-  margin: 10px
-}
-
 #progressBar{
 
 }

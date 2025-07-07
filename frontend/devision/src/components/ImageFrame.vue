@@ -29,20 +29,5 @@ const images = ref<Array<{ filename: string; index: number; url: string }>>([])
 
 <style scoped>
 /* Style for the container holding the image or placeholder */
-.image-frame {
-  border: 2px solid #ccc;           /* Light gray border around the frame */
-  padding: 10px;                    /* Padding inside the frame */
-  width: 300px;                     /* Fixed width */
-  height: 300px;                    /* Fixed height */
-  display: flex;                    /* Flexbox layout */
-  justify-content: center;         /* Center horizontally */
-  align-items: center;             /* Center vertically */
-}
 
-/* Style for the image to fit nicely inside the frame */
-.image-frame img {
-  max-width: 100%;                 /* Ensure image doesn't overflow width */
-  max-height: 100%;               /* Ensure image doesn't overflow height */
-  object-fit: contain;            /* Preserve aspect ratio and show entire image */
-}
 </style>
