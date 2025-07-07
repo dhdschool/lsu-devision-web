@@ -43,7 +43,6 @@ function updateSelectedImage() {
 // TODO: Progress bar function
 function selectMore():void {
   fileInput.value?.click();
-  
 }
 
 function onFileChange(event: Event) {
@@ -64,10 +63,10 @@ function onFileChange(event: Event) {
 }
 
 const removeImage = (id: number) => {
-    const idx = loadedImages.value.findIndex(item => item.id === id)
-    if (idx !== -1){
-        loadedImages.value.splice(idx, 1)
-    }
+  const idx = loadedImages.value.findIndex(item => item.id === id)
+  if (idx !== -1){
+    loadedImages.value.splice(idx, 1)
+  }
 
   }
 
@@ -78,7 +77,6 @@ const removeAllImages = () => {
 
 <template>
   <main>
-    <!--image name sidebar on left-->
     <!--create dropdown list for model selection. Model selection logic can come later-->
     <div class="section" id="top">
       <DropdownList :items="modelSelectItems"/>
@@ -92,7 +90,6 @@ const removeAllImages = () => {
         <BButton pill @click="exportPrediction">Export</BButton>
       </div>
     </div>
-    <!--property sidebar on the right-->
     <div id = leftSidebar>
       <image-sidebar :list-items="loadedImages" :selected="selectedImage" @remove="removeImage"></image-sidebar>    
     </div>
@@ -103,10 +100,9 @@ const removeAllImages = () => {
     <div id="middle">
       <div class="box">
         <BImg v-if="selectedImage" :src="selectedImage.url" fluid alt="Selected" />
-      </div>
+    </div>
     <!--Predicted image-->
       <div class="box"></div>
-    <!--previous button-->
     </div>
     <div id="bottom">
       <div id="previousButton">
@@ -117,7 +113,6 @@ const removeAllImages = () => {
       <div id="nextButton">
         <BButton pill @click="next">Next</BButton>
       </div>
-    <!--progress bar-->
     </div>
     <div id="progressBar">
         <BProgress :value="10"/>
@@ -137,7 +132,7 @@ const removeAllImages = () => {
 .box {
   width:200px;
   height: 200px;
-  background-color: aqua;
+  background-color: #6B6B6B;
   margin: 10px
 }
 #progressBar{
