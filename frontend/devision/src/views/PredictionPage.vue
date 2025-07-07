@@ -70,6 +70,10 @@ const removeImage = (id: number) => {
     }
 
   }
+
+const removeAllImages = () => {
+    loadedImages.value = []
+}
 </script>
 
 <template>
@@ -82,7 +86,7 @@ const removeImage = (id: number) => {
         <BButton pill @click = "predict">Prediction</BButton>
       </div>
       <div id="clearButton">
-        <BButton pill @click = "clear">Clear</BButton>
+        <BButton pill @click = "removeAllImages">Clear</BButton>
       </div>
       <div id="exportButton">
         <BButton pill @click="exportPrediction">Export</BButton>
