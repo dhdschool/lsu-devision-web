@@ -26,7 +26,7 @@ const emit = defineEmits<{
         <b-list-group>
             <b-list-group-item v-for = "item in listItems"
             :key="item.id"
-            :variant="item.name === selected.name ? 'primary' : 'light'"
+            :variant="item.name === selected.name ? 'primary' : 'default'"
             class="sidebar-item"
             >
             {{ item.name.length > 12 ? item.name.slice(0,12) + '...' : item }}
@@ -41,11 +41,8 @@ const emit = defineEmits<{
 
 <style type ="css">
     .leftSidebar .list-group-item {
-        color: #000000;
-        background-color: transparent !important;
     }
 
     .sidebar-item {
-        color:#000000;
     }
 </style>
