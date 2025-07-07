@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Toolbar from './Toolbar.vue';
+import Toolbar from '../Toolbar.vue';
 
     
 console.log("Hello World")
