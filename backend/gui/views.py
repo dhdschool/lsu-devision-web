@@ -36,6 +36,7 @@ class SubmitPredictionView(APIView):
     
 class PredictionResultView(APIView):
     def get(self, request, task_id):
+        task_id = str(task_id)
         result = AsyncResult(task_id)
 
         if not result.ready():

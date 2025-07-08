@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 
 def annotated_image_upload_path(instance, filename):
-    # Save files to MEDIA_ROOT/annotated/<uuid>_<original_filename>
+    # Save files to MEDIA_ROOT/annotated/<uuid>.jpg
     
     filename = Path(filename)
     ext = filename.suffix
@@ -14,8 +14,8 @@ def annotated_image_upload_path(instance, filename):
 # Create your models here.
 class AnnotatedImage(models.Model):
     name = models.CharField(max_length=255, blank=True)
-    image = models.ImageField(upload_to=annotated_image_upload_path, 
-                              height_field='image_height', 
+    image = models.ImageField(upload_to=annotated_image_upload_path,
+                              height_field='image_height',
                               width_field='image_width')
     
     image_height =  models.IntegerField(blank=True, default=1)
