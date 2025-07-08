@@ -5,9 +5,13 @@ import DropdownList from "@/components/DropdownList.vue";
 import ImageSidebar from "@/components/ImageSidebar.vue";
 import StatsSidebar from "@/components/StatsSidebar.vue";
 import { ref } from 'vue';
+import type {AxiosResponse} from "axios";
+import axios from 'axios';
 
 // Model selection
 const dropDownListItems = ["Option 1", "Option 2", "Option 3"];
+// axios variable initialization, required for axios
+
 // Selected images
 
 interface Image {
@@ -33,8 +37,18 @@ function handleInput() {
       storeIndex.value++;
     }
   }
+  sendImages()
 }
-
+function sendImages() {
+  axios.post('http://localhost:8000/predict', loadedImages.value)
+    .then(function (response: AxiosResponse){
+      console.log('Sent!');
+      console.log(response.data);
+    })
+    .catch(function (response: AxiosResponse){
+      console.log(response.data);
+    })
+}
 const canSubmit = ref(false);
 //show submit button when called
 function showSubmit(): void {
