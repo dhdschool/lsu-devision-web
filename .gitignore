@@ -5,3 +5,4 @@ backend/__pycache__
 backend/test-image.jpg
 backend/media/*
 backend/gui/migrations/__pycache__
+backend/db.sqlite3

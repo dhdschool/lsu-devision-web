@@ -18,8 +18,8 @@ class AnnotatedImage(models.Model):
                               height_field='image_height',
                               width_field='image_width')
     
-    image_height =  models.IntegerField(blank=True, default=1)
-    image_width = models.IntegerField(blank=True, default=1)
+    image_height =  models.IntegerField(blank=True, null=True)
+    image_width = models.IntegerField(blank=True, null=True)
     class_color_map = models.JSONField(blank=True, null=True)
     
     def __str__(self):
