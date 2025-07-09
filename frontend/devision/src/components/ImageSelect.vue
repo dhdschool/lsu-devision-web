@@ -2,18 +2,12 @@
 import {ref} from 'vue';
 import type {Ref} from 'vue';
 import {BFormFile, BListGroup, BListGroupItem, BImg, BButton} from 'bootstrap-vue-next';
-
-export interface imageListItems{
-    id: number;
-    name: string;
-    url: string
-}
-
+import type { images } from './images';
 const file = ref<null | File>(null);
 // used to distinguish between identical uploads of images. Starts at 0 and increments forever.
 const fileInputKey = ref(0)
 
-const imageItems: Ref<imageListItems[]> = ref([
+const imageItems: Ref<images[]> = ref([
     //{id: 1, text:'Image1.jpg'} Example schema
 ]);
 
@@ -61,7 +55,9 @@ const clearSingleImageListItems = (id: number) => {
                     label="Please select an image..." 
                     browse-text="Browse"
                     class="flex-grow-1"
-                />
+                >
+                </b-form-file>
+                
                 <b-button variant="primary" type="submit">
                     Upload Image
                 </b-button>
@@ -70,6 +66,7 @@ const clearSingleImageListItems = (id: number) => {
                 Clear All Images
             </b-button>
         </form>
+
         <b-list-group>
             <b-list-group-item 
                 v-for="item in imageItems"
