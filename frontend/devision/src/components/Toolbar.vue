@@ -1,4 +1,4 @@
-<script setup lang="ts">    
+<script setup lang="ts">
 import { BButtonToolbar } from 'bootstrap-vue-next';
 
 console.log("Toolbar Loaded!")
@@ -25,6 +25,7 @@ console.log("Toolbar Loaded!")
 <style lang="css">
 b-button{
   background-color: #81b4ba;
-  
+  width: 100%;
+
 }
 </style>
