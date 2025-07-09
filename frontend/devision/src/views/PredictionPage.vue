@@ -1,42 +1,68 @@
 <script setup lang="ts">
 import { BImg, BButton, BProgress } from 'bootstrap-vue-next';
-
-
+import ImageFrame from "@/components/ImageFrame.vue";
+import DropdownList from "@/components/DropdownList.vue";
+import ImageSidebar from "@/components/ImageSidebar.vue";
+import StatsSidebar from "@/components/StatsSidebar.vue";
+import { ref } from 'vue';
+import type {AxiosResponse} from "axios";
+import axios from 'axios';
 import type { images } from '@/components/images';
 import type { RefSymbol } from '@vue/reactivity';
 
 
-//Model selection logic
+//constants section
 
+//Model selection logic
 const modelSelectItems = ["Model 1", "Model 2", "Model 3"]
 
 const selectedImage = ref<images | null>(null);
 let nextId: number = 1;
 
-const clear = () => {
-    loadedImages.value = []
-    // For file input key in imageSidebar
-    currentImageIndex.value = 0
-}
+const loadedImages = ref<Image[]>([]);
+//Index for accessing the array
+const currentIndex = ref(0)
+const storeIndex = ref(0)
+//Input variable for file uploading, will be set to null when no file is uploaded
+const fileInput = ref<HTMLInputElement | null>(null);
+const canSubmit = ref(false);
 
+// Selected images
+interface Image {
+  filename: string;
+  index: number;
+  url: string;
+}
+const removeAllImages = () => {
+  loadedImages.value = []
+}
+// Popup trigger for ImageSelect component
+const showImageSelect = ref(false);
+
+    const removeImage = (id: number) => {
+  const idx = loadedImages.value.findIndex(item => item.id === id)
+  if (idx !== -1){
+    loadedImages.value.splice(idx, 1)
+  }
+}
 function next():void {
-  if (currentImageIndex.value < loadedImages.value.length - 1){
-    currentImageIndex.value++;
+  if (currentIndex.value < loadedImages.value.length - 1){
+    currentIndex.value++;
   } else{
-    currentImageIndex.value = 0;
+    currentIndex.value = 0;
   }
   updateSelectedImage()
-} 
+}
 function previous():void {
-  if (currentImageIndex.value > 0) {
-    currentImageIndex.value--;
+  if (currentIndex.value > 0) {
+    currentIndex.value--;
   } else{
-    currentImageIndex.value = loadedImages.value.length - 1;
+    currentIndex.value = loadedImages.value.length - 1;
   }
   updateSelectedImage()
-} 
+}
 function updateSelectedImage() {
-  selectedImage.value = loadedImages.value[currentImageIndex.value];
+  selectedImage.value = loadedImages.value[currentIndex.value];
 }
 // TODO: Progress bar function
 function selectMore():void {
@@ -60,44 +86,9 @@ function onFileChange(event: Event) {
     }
 }
 
-const removeImage = (id: number) => {
-  const idx = loadedImages.value.findIndex(item => item.id === id)
-  if (idx !== -1){
-    loadedImages.value.splice(idx, 1)
-  }
 
-  }
-
-const removeAllImages = () => {
-    loadedImages.value = []
-
-import ImageFrame from "@/components/ImageFrame.vue";
-import DropdownList from "@/components/DropdownList.vue";
-import ImageSidebar from "@/components/ImageSidebar.vue";
-import StatsSidebar from "@/components/StatsSidebar.vue";
-import { ref } from 'vue';
-import type {AxiosResponse} from "axios";
-import axios from 'axios';
-
-// Model selection
-const dropDownListItems = ["Option 1", "Option 2", "Option 3"];
-// axios variable initialization, required for axios
-
-// Selected images
-
-interface Image {
-  filename: string;
-  index: number;
-  url: string;
-}
 //Images will be loaded into this array
-const loadedImages = ref<Image[]>([]);
-//Index for accessing the array
-const currentIndex = ref(0)
-const storeIndex = ref(0)
-//Input variable for file uploading, will be set to null when no file is uploaded
-const fileInput = ref<HTMLInputElement | null>(null);
-let index: number = 1;
+
 
 function handleInput() {
   const files = fileInput.value?.files;
@@ -120,14 +111,13 @@ function sendImages() {
       console.log(response.data);
     })
 }
-const canSubmit = ref(false);
+
 //show submit button when called
 function showSubmit(): void {
   canSubmit.value = true;
 }
 
-// Popup trigger for ImageSelect component
-const showImageSelect = ref(false);
+
 
 // Prediction actions
 function predict(): void {
@@ -145,20 +135,10 @@ function exportPrediciton(): void {
   console.log("Export pressed");
 }
 
-// Image navigation
-
-
-
-
-// ImageSelect dialog handlers
-function selectMore(): void {
-  console.log('Does nothing');
-}
-
 function closeImageSelect(): void {
   showImageSelect.value = false;
-
 }
+
 </script>
 
 <template>
@@ -180,7 +160,7 @@ function closeImageSelect(): void {
     </div>
 
     <div id = leftSidebar>
-      <image-sidebar :list-items="loadedImages" :selected="selectedImage" @remove="removeImage"></image-sidebar>    
+      <image-sidebar :list-items="loadedImages" :selected="selectedImage" @remove="removeImage"></image-sidebar>
     </div>
     <div id = rightSidebar>
       <stats-sidebar></stats-sidebar>
@@ -216,7 +196,7 @@ function closeImageSelect(): void {
       <!--<button @click="selectMore">Select more images</button>-->
     <!-- Select More Button -->
     <div id="selectMoreButton">
-      <input type="file" id="input" ref="fileInput" multiple @click="showSubmit">
+      <input type="file" id="input" ref="fileInput" multiple @click="showSubmit" >
       <div v-if="canSubmit === true">
         <button @click="handleInput">Submit</button>
       </div>
@@ -237,7 +217,7 @@ function closeImageSelect(): void {
   margin: 10px
 }
 #progressBar{
-} 
+}
 
 #leftSidebar{
   width: 10vw;
