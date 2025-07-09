@@ -14,7 +14,7 @@ redis-server --daemonize yes
 echo "Starting Django server at http://127.0.0.1:8000..."
 python manage.py runserver 127.0.0.1:8000 &
 
-# Wait briefly to ensure server is up
+# Wait
 sleep 2
 
 # Start Celery worker
