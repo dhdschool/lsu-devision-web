@@ -27,6 +27,7 @@ declare module 'vue' {
     IconSupport: typeof import('./src/components/icons/IconSupport.vue')['default']
     IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
     ImageListItems: typeof import('./src/components/ImageListItems.vue')['default']
+    ImageFrame: typeof import('./src/components/ImageFrame.vue')['default']
     ImageSelect: typeof import('./src/components/ImageSelect.vue')['default']
     ImageSidebar: typeof import('./src/components/ImageSidebar.vue')['default']
     PredictionImageSelect: typeof import('./src/components/predictionImageSelect.vue')['default']
