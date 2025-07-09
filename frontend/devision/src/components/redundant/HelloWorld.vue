@@ -2,9 +2,9 @@
 defineProps<{
   msg: string
 }>()
-import ImageSelect from './ImageSelect.vue';
+import ImageSelect from '../ImageSelect.vue';
 // Import tests.
-import DropdownList from './DropdownList.vue';
+import DropdownList from '../DropdownList.vue';
 //import { imageItems } from './ImageSelect.vue';
 // define prop and selection for DropDownList
 const dropDownListItems = ["Option 1", "Option 2", "Option 3"]

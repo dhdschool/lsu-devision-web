@@ -1,5 +1,76 @@
 <script setup lang="ts">
 import { BImg, BButton, BProgress } from 'bootstrap-vue-next';
+
+
+import type { images } from '@/components/images';
+import type { RefSymbol } from '@vue/reactivity';
+
+
+//Model selection logic
+
+const modelSelectItems = ["Model 1", "Model 2", "Model 3"]
+
+const selectedImage = ref<images | null>(null);
+let nextId: number = 1;
+
+const clear = () => {
+    loadedImages.value = []
+    // For file input key in imageSidebar
+    currentImageIndex.value = 0
+}
+
+function next():void {
+  if (currentImageIndex.value < loadedImages.value.length - 1){
+    currentImageIndex.value++;
+  } else{
+    currentImageIndex.value = 0;
+  }
+  updateSelectedImage()
+} 
+function previous():void {
+  if (currentImageIndex.value > 0) {
+    currentImageIndex.value--;
+  } else{
+    currentImageIndex.value = loadedImages.value.length - 1;
+  }
+  updateSelectedImage()
+} 
+function updateSelectedImage() {
+  selectedImage.value = loadedImages.value[currentImageIndex.value];
+}
+// TODO: Progress bar function
+function selectMore():void {
+  fileInput.value?.click();
+}
+
+function onFileChange(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0){
+    const file = input.files[0]
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      loadedImages.value.push({
+        id: nextId++,
+        name: file.name,
+        url: e.target?.result as string
+    })
+    selectedImage.value = loadedImages.value[loadedImages.value.length - 1]}
+    reader.readAsDataURL(file)
+    input.value = ''
+    }
+}
+
+const removeImage = (id: number) => {
+  const idx = loadedImages.value.findIndex(item => item.id === id)
+  if (idx !== -1){
+    loadedImages.value.splice(idx, 1)
+  }
+
+  }
+
+const removeAllImages = () => {
+    loadedImages.value = []
+
 import ImageFrame from "@/components/ImageFrame.vue";
 import DropdownList from "@/components/DropdownList.vue";
 import ImageSidebar from "@/components/ImageSidebar.vue";
@@ -75,13 +146,9 @@ function exportPrediciton(): void {
 }
 
 // Image navigation
-function next(): void {
-  if (currentIndex.value < loadedImages.value.length - 1) currentIndex.value++;
-}
 
-function previous(): void {
-  if (currentIndex.value > 0) currentIndex.value--;
-}
+
+
 
 // ImageSelect dialog handlers
 function selectMore(): void {
@@ -90,39 +157,39 @@ function selectMore(): void {
 
 function closeImageSelect(): void {
   showImageSelect.value = false;
+
 }
 </script>
 
 <template>
   <main>
+
     <h1>Prediction Page</h1>
-    <p>Under Construction</p>
-    <!-- Model Selection and Actions -->
+    <!--create dropdown list for model selection. Model selection logic can come later-->
     <div class="section" id="top">
-      <DropdownList :items="dropDownListItems" />
+      <DropdownList :items="modelSelectItems" />
       <div id="predictButton">
         <BButton pill @click="predict">Prediction</BButton>
       </div>
       <div id="clearButton">
-        <BButton pill @click="clear">Clear</BButton>
+        <BButton pill @click = "removeAllImages">Clear</BButton>
       </div>
       <div id="exportButton">
-        <BButton pill @click="exportPrediciton">Export</BButton>
+        <BButton pill @click="exportPrediction">Export</BButton>
       </div>
     </div>
 
-    <!-- Sidebars -->
-    <div id="leftSidebar">
-      <!-- < ImageSidebar :list-items="loadedImages" />-->
+    <div id = leftSidebar>
+      <image-sidebar :list-items="loadedImages" :selected="selectedImage" @remove="removeImage"></image-sidebar>    
     </div>
-
-    <div id="rightSidebar">
-      <StatsSidebar />
+    <div id = rightSidebar>
+      <stats-sidebar></stats-sidebar>
     </div>
 
     <!-- Image Preview Frame -->
     <div id="middle">
       <div class="box">
+
         <ImageFrame :imageSrc="loadedImages[currentIndex.valueOf()]?.url" />
       </div>
       <div class="box">
@@ -140,12 +207,13 @@ function closeImageSelect(): void {
         <BButton pill @click="next">Next</BButton>
       </div>
     </div>
-
     <!-- Progress Bar -->
     <div id="progressBar">
       <BProgress :value="(currentIndex + 1) / loadedImages.length * 100 || 0" />
     </div>
-
+    <!--<div id="selectMoreButton">-->
+      <!--<input type="file" ref="fileInput" style="display: none" @change="onFileChange" />-->
+      <!--<button @click="selectMore">Select more images</button>-->
     <!-- Select More Button -->
     <div id="selectMoreButton">
       <input type="file" id="input" ref="fileInput" multiple @click="showSubmit">
@@ -162,51 +230,47 @@ function closeImageSelect(): void {
   display: flex
 }
 
-#progressBar{
-
+.box {
+  width:200px;
+  height: 200px;
+  background-color: #6B6B6B;
+  margin: 10px
 }
+#progressBar{
+} 
 
 #leftSidebar{
   width: 10vw;
   min-height:60vh;
   position: absolute; left: 0px; top: 37px;
-
 }
-
 #rightSidebar{
   width: 10vw;
   min-height:60vh;
   position: absolute; right: 0px; top: 37px;
 }
-
 #top{
   margin: 10px auto;
   align-items: center;
   justify-content: space-around;
 }
-
 #middle{
   margin: 10px;
   align-items: center;
   justify-content: space-around;
   display: flex
 }
-
 #bottom{
   width: auto;
   display: flex;
   justify-content:space-between
-
 }
-
 #modelSelect{
   margin: 5px;
 }
-
 #predictButton{
   margin: 5px;
 }
-
 #clearButton{
   margin: 5px;
 }
@@ -214,26 +278,21 @@ function closeImageSelect(): void {
 #exportButton{
   margin: 5px;
 }
-
 #previousButton{
   margin: 25px
 }
-
 #nextButton{
   margin: 25px
 }
-
 #selectMoreButton{
   width: 10vw;
   margin-top: 10px;
   position: absolute; left: 0px
 }
-
 #oyster{
   width: 100px;
   height: 100px;
   background-color: yellowgreen;
   margin: 10px;
 }
-
 </style>
