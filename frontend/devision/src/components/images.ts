@@ -1,5 +1,5 @@
 export interface images{
-    id: number;
-    name: string;
-    url: string
+    filename: string;
+    index: number;
+    url: string;
 }
