@@ -8,15 +8,20 @@ defineProps<{
   listItems: images[];
   selected: images;
 }>();
-
-//const imageItems: Ref<images[]> = ref([
-    //{id: 1, text:'Image1.jpg'} Example schema
-//]);
-
 const emit = defineEmits<{
-    (e: 'remove', id: number): void;
+    (e: 'remove', index: number): void;
 }>()
 
+function shortenName(name: string) {
+  console.log(name)
+    if (name.length > 12) {
+        return name.slice(0, 12) + '...';
+    }
+    return name;
+}
+function handleRemove2(index: number) {
+  emit('remove', index);
+}
 
 // Adds an item to the image list dropdown under the file input
 </script>
@@ -25,13 +30,13 @@ const emit = defineEmits<{
     <div class="leftSideBar">
         <b-list-group>
             <b-list-group-item v-for = "item in listItems"
-            :key="item.id"
-            :variant="item.name === selected.name ? 'primary' : 'default'"
+            :key="item.index"
+            :variant="item.filename === selected.filename ? 'primary' : 'default'"
             class="sidebar-item"
             >
-            {{ item.name.length > 12 ? item.name.slice(0,12) + '...' : item }}
+            {{ shortenName(item.filename) }}
 
-            <b-button size="sm" variant="danger" @click="emit('remove',item.id)">
+            <b-button size="sm" variant="danger" @click="handleRemove2(item.index)">
                 Remove
             </b-button>
             </b-list-group-item>

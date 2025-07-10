@@ -19,7 +19,7 @@ const modelSelectItems = ["Model 1", "Model 2", "Model 3"]
 const selectedImage = ref<images | null>(null);
 let nextId: number = 1;
 
-const loadedImages = ref<Image[]>([]);
+const loadedImages = ref<images[]>([]);
 //Index for accessing the array
 const currentIndex = ref(0)
 const storeIndex = ref(0)
@@ -27,20 +27,13 @@ const storeIndex = ref(0)
 const fileInput = ref<HTMLInputElement | null>(null);
 const canSubmit = ref(false);
 
-// Selected images
-interface Image {
-  filename: string;
-  index: number;
-  url: string;
-}
 const removeAllImages = () => {
   loadedImages.value = []
 }
 // Popup trigger for ImageSelect component
 const showImageSelect = ref(false);
-
-    const removeImage = (id: number) => {
-  const idx = loadedImages.value.findIndex(item => item.id === id)
+const removeImage = (id: number) => {
+  const idx = loadedImages.value.findIndex(item => item.index === id)
   if (idx !== -1){
     loadedImages.value.splice(idx, 1)
   }
@@ -76,7 +69,7 @@ function onFileChange(event: Event) {
     const reader = new FileReader()
     reader.onload = (e) => {
       loadedImages.value.push({
-        id: nextId++,
+        index: nextId++,
         name: file.name,
         url: e.target?.result as string
     })
@@ -85,10 +78,7 @@ function onFileChange(event: Event) {
     input.value = ''
     }
 }
-
-
 //Images will be loaded into this array
-
 
 function handleInput() {
   const files = fileInput.value?.files;
@@ -98,8 +88,9 @@ function handleInput() {
       loadedImages.value.push({filename: file.name, index: storeIndex.value,url: url});
       storeIndex.value++;
     }
+    selectedImage.value = loadedImages.value[loadedImages.value.length - 1];
   }
-  sendImages()
+  //sendImages()
 }
 function sendImages() {
   axios.post('http://localhost:8000/predict', loadedImages.value)
@@ -131,7 +122,7 @@ function clear(): void {
   console.log("Clear button pressed");
 }
 
-function exportPrediciton(): void {
+function exportPrediction(): void {
   console.log("Export pressed");
 }
 
