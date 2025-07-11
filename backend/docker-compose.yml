@@ -3,7 +3,7 @@ version: "3.9"
 services:
   web:
     build: .
-    image: ghcr.io/dhdschool/lsu-devision-web/backend-web:latest
+    image: ghcr.io/dhdschool/backend-web:latest
     command: gunicorn devision.wsgi:application --bind 0.0.0.0:8000
     ports:
       - "8000:8000"
@@ -17,7 +17,7 @@ services:
 
   celery:
     build: .
-    image: ghcr.io/dhdschool/lsu-devision-web/backend-celery:latest
+    image: ghcr.io/dhdschool/backend-celery:latest
     volumes:
       - .:/app
     command: celery -A devision worker --loglevel=info

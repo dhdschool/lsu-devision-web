@@ -63,8 +63,8 @@ if %ERRORLEVEL% NEQ 0 (
     goto waitdocker
 )
 
-docker pull ghcr.io/dhdschool/lsu-devision-web/backend-web:latest
-docker pull ghcr.io/dhdschool/lsu-devision-web/backend-celery:latest
+docker pull ghcr.io/dhdschool/backend-web:latest
+docker pull ghcr.io/dhdschool/backend-celery:latest
 
 :: Build and run docker container
 docker compose -f docker-compose.yml up -d --pull always
