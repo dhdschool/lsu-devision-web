@@ -8,13 +8,18 @@ if %errorLevel% NEQ 0 (
     exit /b 1
 )
 
-:: Enable wsl download
-dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 
-:: Install wsl
-wsl --install -d Ubuntu
+where wsl >nul 2>&1
+IF %ERRORLEVEL% EQU 0 (
+    echo wsl is installed...
+) ELSE (
+    :: Enable wsl download
+    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 
+    :: Install wsl
+    wsl --install -d Ubuntu
+)
 :: Install docker
 where "Docker Desktop.exe" >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
@@ -58,8 +63,11 @@ if %ERRORLEVEL% NEQ 0 (
     goto waitdocker
 )
 
+docker pull ghcr.io/dhdschool/lsu-devision-web/backend-web:latest
+docker pull ghcr.io/dhdschool/lsu-devision-web/backend-celery:latest
+
 :: Build and run docker container
-docker-compose up --build -d
+docker compose -f docker-compose.yml up -d --pull always
 
 if %ERRORLEVEL% NEQ 0 (
     echo Docker Compose failed to start containers.
