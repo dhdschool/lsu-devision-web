@@ -25,7 +25,7 @@ jobs:
 
     - name: Build web image
       run: |
-        docker build -t $REGISTRY/$IMAGE_OWNER/bakend-web:latest -f backend/Dockerfile ./backend
+        docker build -t $REGISTRY/$IMAGE_OWNER/backend-web:latest -f backend/Dockerfile ./backend
 
     - name: Build celery image
       run: |
