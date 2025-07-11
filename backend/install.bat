@@ -15,7 +15,7 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
 :: Install wsl
 wsl --install -d Ubuntu
 
-:: Check if Docker Desktop is installed
+:: Install docker
 where "Docker Desktop.exe" >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo Installing docker desktop
@@ -34,7 +34,7 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 0
 )
 
-:: Check if Docker Desktop is running, start if not
+:: Run docker desktop
 powershell -Command "Get-Process -Name 'Docker Desktop' -ErrorAction SilentlyContinue" >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo Starting Docker Desktop...
@@ -43,8 +43,7 @@ if %ERRORLEVEL% NEQ 0 (
     timeout /t 20 /nobreak >nul
 )
 
-:: Wait for Docker daemon to be ready (up to 60s)
-echo Waiting for Docker daemon to be ready...
+:: Wait for docker desktop
 set /a retries=0
 :waitdocker
 docker info >nul 2>&1
@@ -59,7 +58,7 @@ if %ERRORLEVEL% NEQ 0 (
     goto waitdocker
 )
 
-echo Building and starting Docker containers...
+:: Build and run docker container
 docker-compose up --build -d
 
 if %ERRORLEVEL% NEQ 0 (
@@ -68,10 +67,7 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-echo Running migrations inside the web container...
-docker-compose exec web python manage.py migrate
-
-echo All done! Your app should be running at http://localhost:8000
+echo Backend running at http://localhost:8000
 echo To stop containers: docker-compose down
 
 pause

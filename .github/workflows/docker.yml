@@ -1,0 +1,38 @@
+name: Build and Push Images
+
+on:
+  push:
+    branches: [ main, Dockerbuild ]
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_OWNER: ${{ github.repository_owner }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Log in to GitHub Container Registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login $REGISTRY -u ${{ github.actor }} --password-stdin
+
+    - name: Build web image
+      run: |
+        docker build -t $REGISTRY/$IMAGE_OWNER/bakend-web:latest -f backend/Dockerfile .
+
+    - name: Build celery image
+      run: |
+        docker build -t $REGISTRY/$IMAGE_OWNER/backend-celery:latest -f backend/Dockerfile .
+
+    - name: Push web image
+      run: docker push $REGISTRY/$IMAGE_OWNER/backend-web:latest
+
+    - name: Push celery image
+      run: docker push $REGISTRY/$IMAGE_OWNER/backend-celery:latest
