@@ -1,171 +1,60 @@
-/*css global variables*/
 /* 🌞 Light Theme */
 .theme-light {
-  --color-white: #ffffff;           /* Backgrounds, inputs, sections */
   --color-black: #000000;           /* Text and labels */
-  --color-left-col: #eef8eb;        /* Left column background */
-  --color-right-col: #fdfce9;       /* Right column background */
-  --color-dark-gray: #343a40;       /* Card border & text */
-  --color-link-blue: #007bff;       /* Hyperlinks */
-  --color-light-gray: #f0f0f0;      /* Button background */
-  --color-hover-gray: #e0e0e0;      /* Button hover */
-  --color-card-bg: #f8f9fa;         /* Card background */
   --color-border-light: #eee;       /* Section dividers */
   --color-button: #000000;          /* Button text color */
+  --color-card-bg: #f8f9fa;         /* Card background */
+  --color-dark-gray: #343a40;       /* Card border & text */
+  --color-hover-gray: #e0e0e0;      /* Button hover */
+  --color-left-col: #eef8eb;        /* Left column background */
+  --color-light-gray: #f0f0f0;      /* Button background */
+  --color-link-blue: #007bff;       /* Hyperlinks */
+  --color-right-col: #fdfce9;       /* Right column background */
+  --color-white: #ffffff;           /* Backgrounds, inputs, sections */
 }
 
 /* 🌙 Dark Theme */
 .theme-dark {
-  --color-white: #181818;           /* Backgrounds, inputs, sections */
   --color-black: #f8f8f8;           /* Text and labels */
-  --color-left-col: #2e3d2f;        /* Left column background */
-  --color-right-col: #44432c;       /* Right column background */
-  --color-dark-gray: #cccccc;       /* Card border & text */
-  --color-link-blue: #66aaff;       /* Hyperlinks */
-  --color-light-gray: #444;         /* Button background */
-  --color-hover-gray: #555;         /* Button hover */
-  --color-card-bg: #222;            /* Card background */
   --color-border-light: #666;       /* Section dividers */
   --color-button: #f8f8f8;          /* Button text color */
+  --color-card-bg: #222;            /* Card background */
+  --color-dark-gray: #cccccc;       /* Card border & text */
+  --color-hover-gray: #555;         /* Button hover */
+  --color-left-col: #2e3d2f;        /* Left column background */
+  --color-light-gray: #444;         /* Button background */
+  --color-link-blue: #66aaff;       /* Hyperlinks */
+  --color-right-col: #44432c;       /* Right column background */
+  --color-white: #181818;           /* Backgrounds, inputs, sections */
 }
+
 .bg {
-  min-height: 100vh;
   background-color: var(--color-white);
-}
-
-.columns {
-  display: flex;
-  width: 100%;
   min-height: 100vh;
 }
 
-.leftColumn {
-  background-color: var(--color-left-col);
-  width: 10vw;
-  min-height: 60vh;
-}
-
-.rightColumn {
-  background-color: var(--color-right-col);
-  width: 10vw;
-  min-height: 60vh;
-}
-
-.spacer {
-  flex: 1 1 0%;
-  color: var(--color-black);
-}
-
-.font {
-  color: var(--color-black);
-}
-
-/* Settings Page */
-.settings-page {
-  width: 100%;
-  min-height: 100%;
-  padding: 2rem;
-}
-
-.settings-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.settings-section {
-  background: var(--color-white);
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--color-hover-gray);
-  color: var(--color-black);
-}
-
-.settings-section h2 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.25rem;
-  border-bottom: 1px solid var(--color-border-light);
-  padding-bottom: 0.5rem;
-}
-
-.settings-section label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: var(--color-black);
-  font-size: 1rem;
-}
-
-.settings-section input[type="checkbox"] {
-  margin-right: 0.5rem;
-}
-
-.settings-section input[type="text"] {
-  color: var(--color-black);
+.box {
   background-color: var(--color-white);
-  border: 1px solid var(--color-black);
-  padding: 0.5rem;
-  border-radius: 4px;
-  box-sizing: border-box;
-  margin-right: 0.5rem;
+  height: 200px;
+  margin: 10px;
+  width:200px;
 }
-
-.save-button {
+.button{
   background-color: var(--color-light-gray);
-  color: var(--color-button);
-  border: none;
-  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border-light);
   border-radius: 4px;
+  color: var(--color-button);
   cursor: pointer;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.3s ease;
 }
-
-.save-button:hover {
+.button:hover {
   background-color: var(--color-hover-gray);
 }
-
-/* Home Page */
-main {
-  text-align: center;
-  color: var(--color-black);
-  padding-bottom: 1rem;
-}
-
-.main-text {
-  text-align: left;
-  color: var(--color-black);
-}
-
-.image {
-  width: 100%;
-  bottom: 0;
-}
-
-/* Contact Page */
-.contact-card {
-  background-color: var(--color-card-bg);
-  border: 2px solid var(--color-dark-gray);
+.card-content {
   color: var(--color-dark-gray);
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  text-align: center;
-  width: 100%;
-  margin: 0 auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
-.card-title {
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.card-content p {
-  margin: 0.75rem 0;
-}
-
 .card-content a {
   color: var(--color-link-blue);
   text-decoration: none;
@@ -175,54 +64,168 @@ main {
   text-decoration: underline;
 }
 
-/* Help Page */
-main {
-  text-align: center;
+.card-content p {
+  margin: 0.75rem 0;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.columns {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: 2rem;
-  max-width: 100%;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.contact-card {
+  background-color: var(--color-card-bg);
+  border: 2px solid var(--color-dark-gray);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--color-dark-gray);
   margin: 0 auto;
+  padding: 1.5rem;
+  text-align: center;
+  width: 100%;
+}
+
+.font {
+  color: var(--color-black);
+}
+
+.image {
+  bottom: 0;
+  width: 100%;
+}
+
+.image-frame {
+  align-items: center;
+  border: 3px solid var(--color-dark-gray);
+  border-radius: 20px;
+  display: flex;
+  height: 300px;
+  justify-content: center;
+  padding: 10px;
+  width: 300px;
+}
+
+.image-frame img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .info-card {
   background-color: var(--color-card-bg);
   border: 2px solid var(--color-dark-gray);
-  color: var(--color-dark-gray);
   border-radius: 0.5rem;
-  padding: 1.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: var(--color-dark-gray);
+  padding: 1.5rem;
 }
 
-.card-title {
+.leftColumn {
+  background-color: var(--color-left-col);
+  min-height: 60vh;
+  width: 10vw;
+}
+
+.main-text {
+  color: var(--color-black);
+  text-align: left;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 0 auto;
+  max-width: 100%;
+  padding: 2rem;
+  text-align: center;
+}
+
+main {
+  color: var(--color-black);
+  padding-bottom: 1rem;
+  text-align: center;
+}
+
+.rightColumn {
+  background-color: var(--color-right-col);
+  min-height: 60vh;
+  width: 10vw;
+}
+
+.save-button {
+  background-color: var(--color-light-gray);
+  border: none;
+  border-radius: 4px;
+  color: var(--color-button);
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+}
+
+.save-button:hover {
+  background-color: var(--color-hover-gray);
+}
+
+.settings-container {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  margin: 0 auto;
+  max-width: 1400px;
+}
+
+.settings-page {
+  min-height: 100%;
+  padding: 2rem;
+  width: 100%;
+}
+
+.settings-section {
+  background: var(--color-white);
+  border: 1px solid var(--color-hover-gray);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: var(--color-black);
+  padding: 1.5rem;
+}
+
+.settings-section h2 {
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: 1.25rem;
   margin-bottom: 1rem;
-  font-size: 1.5rem;
-  font-weight: 600;
+  margin-top: 0;
+  padding-bottom: 0.5rem;
 }
-/* Predictions Page */
-/*Image Frame*/
-.box {
-  width:200px;
-  height: 200px;
+
+.settings-section input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+.settings-section input[type="text"] {
   background-color: var(--color-white);
-  margin: 10px;
-}
-.image-frame {
-  border-radius: 20px;
-  border: 3px solid var(--color-dark-gray);           /* Light gray border around the frame */
-  padding: 10px;                    /* Padding inside the frame */
-  width: 300px;                     /* Fixed width */
-  height: 300px;                    /* Fixed height */
-  display: flex;                    /* Flexbox layout */
-  justify-content: center;         /* Center horizontally */
-  align-items: center;             /* Center vertically */
-
+  border: 1px solid var(--color-black);
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: var(--color-black);
+  margin-right: 0.5rem;
+  padding: 0.5rem;
 }
 
-/* Style for the image to fit nicely inside the frame */
-.image-frame img {
-  max-width: 100%;                 /* Ensure image doesn't overflow width */
-  max-height: 100%;               /* Ensure image doesn't overflow height */
-  object-fit: contain;            /* Preserve aspect ratio and show entire image */
+.settings-section label {
+  color: var(--color-black);
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.spacer {
+  color: var(--color-black);
+  flex: 1 1 0%;
 }

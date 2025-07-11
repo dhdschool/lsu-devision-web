@@ -8,27 +8,28 @@ import { ref } from 'vue';
 import type {AxiosResponse} from "axios";
 import axios from 'axios';
 import type { images } from '@/components/images';
-import type { RefSymbol } from '@vue/reactivity';
 
 
 //constants section
 
 //Model selection logic
 const modelSelectItems = ["Model 1", "Model 2", "Model 3"]
-
+//holds value for currently displayed image
 const selectedImage = ref<images | null>(null);
-let nextId: number = 1;
-
+// Array for storing images
 const loadedImages = ref<images[]>([]);
 //Index for accessing the array
 const currentIndex = ref(0)
+//Index for adding values to the array
 const storeIndex = ref(0)
 //Input variable for file uploading, will be set to null when no file is uploaded
 const fileInput = ref<HTMLInputElement | null>(null);
+// boolean value to determine if the submit button should be enabled
 const canSubmit = ref(false);
 
 const removeAllImages = () => {
-  loadedImages.value = []
+  loadedImages.value = [];
+  currentIndex.value = 0;
 }
 // Popup trigger for ImageSelect component
 const showImageSelect = ref(false);
@@ -57,29 +58,7 @@ function previous():void {
 function updateSelectedImage() {
   selectedImage.value = loadedImages.value[currentIndex.value];
 }
-// TODO: Progress bar function
-function selectMore():void {
-  fileInput.value?.click();
-}
-
-function onFileChange(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files.length > 0){
-    const file = input.files[0]
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      loadedImages.value.push({
-        index: nextId++,
-        name: file.name,
-        url: e.target?.result as string
-    })
-    selectedImage.value = loadedImages.value[loadedImages.value.length - 1]}
-    reader.readAsDataURL(file)
-    input.value = ''
-    }
-}
 //Images will be loaded into this array
-
 function handleInput() {
   const files = fileInput.value?.files;
   if (files) {
@@ -90,8 +69,10 @@ function handleInput() {
     }
     selectedImage.value = loadedImages.value[loadedImages.value.length - 1];
   }
+  // uncomment this line when it is time to communicate with the back end
   //sendImages()
 }
+//Send images to the back end
 function sendImages() {
   axios.post('http://localhost:8000/predict', loadedImages.value)
     .then(function (response: AxiosResponse){
@@ -108,26 +89,13 @@ function showSubmit(): void {
   canSubmit.value = true;
 }
 
-
-
 // Prediction actions
 function predict(): void {
   console.log("Prediction button pressed");
 }
 
-// Prediction actions
-function clear(): void {
-  loadedImages.value = [];
-  currentIndex.value = 0;
-  console.log("Clear button pressed");
-}
-
 function exportPrediction(): void {
   console.log("Export pressed");
-}
-
-function closeImageSelect(): void {
-  showImageSelect.value = false;
 }
 
 </script>
@@ -140,13 +108,13 @@ function closeImageSelect(): void {
     <div class="section" id="top">
       <DropdownList :items="modelSelectItems" />
       <div id="predictButton">
-        <BButton pill @click="predict">Prediction</BButton>
+        <Button class="button" @click="predict">Prediction</Button>
       </div>
       <div id="clearButton">
-        <BButton pill @click = "removeAllImages">Clear</BButton>
+        <button class="button" @click = "removeAllImages">Clear</button>
       </div>
       <div id="exportButton">
-        <BButton pill @click="exportPrediction">Export</BButton>
+        <Button class="button" @click="exportPrediction">Export</Button>
       </div>
     </div>
 
@@ -159,11 +127,10 @@ function closeImageSelect(): void {
 
     <!-- Image Preview Frame -->
     <div id="middle">
-      <div class="box">
-
+      <div>
         <ImageFrame :imageSrc="loadedImages[currentIndex.valueOf()]?.url" />
       </div>
-      <div class="box">
+      <div>
         <ImageFrame placeholder-text="Waiting on Prediction" />
       </div>
     </div>
@@ -171,25 +138,22 @@ function closeImageSelect(): void {
     <!-- Navigation Controls -->
     <div id="bottom">
       <div id="previousButton">
-        <BButton pill @click="previous">Previous</BButton>
+        <Button class="button" @click="previous">Previous</Button>
       </div>
-      <div id="oyster"></div>
+      <!--<div id="oyster"></div>-->
       <div id="nextButton">
-        <BButton pill @click="next">Next</BButton>
+        <Button class="button" @click="next">Next</Button>
       </div>
     </div>
     <!-- Progress Bar -->
     <div id="progressBar">
-      <BProgress :value="(currentIndex + 1) / loadedImages.length * 100 || 0" />
+      <BProgress :value="(currentIndex + 1) / loadedImages.length * 100 || 0" /> <!-- Replace with actual progress, supposed to be used for predictions -->
     </div>
-    <!--<div id="selectMoreButton">-->
-      <!--<input type="file" ref="fileInput" style="display: none" @change="onFileChange" />-->
-      <!--<button @click="selectMore">Select more images</button>-->
-    <!-- Select More Button -->
+    <!-- Image Selection Button -->
     <div id="selectMoreButton">
       <input type="file" id="input" ref="fileInput" multiple @click="showSubmit" >
       <div v-if="canSubmit === true">
-        <button @click="handleInput">Submit</button>
+        <button class="button" @click="handleInput">Submit</button>
       </div>
     </div>
   </main>
@@ -202,10 +166,7 @@ function closeImageSelect(): void {
 }
 
 .box {
-  width:200px;
-  height: 200px;
-  background-color: #6B6B6B;
-  margin: 10px
+/* leave empty */
 }
 #progressBar{
 }
@@ -218,7 +179,7 @@ function closeImageSelect(): void {
 #rightSidebar{
   width: 10vw;
   min-height:60vh;
-  position: absolute; right: 0px; top: 37px;
+  position: absolute; right: 0px; top: 90px;
 }
 #top{
   margin: 10px auto;
