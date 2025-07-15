@@ -1,8 +1,4 @@
 backend/devision/__pycache__
 backend/gui/__pycache__
-backend/gui/src/__pycache__
-backend/__pycache__
-backend/test-image.jpg
-backend/media/*
-backend/gui/migrations/__pycache__
+
 backend/db.sqlite3
