@@ -21,6 +21,7 @@ fonttools==4.58.4
 gast==0.6.0
 google-pasta==0.2.0
 grpcio==1.73.0
+gunicorn==23.0.0
 h5py==3.14.0
 idna==3.10
 imageio==2.37.0

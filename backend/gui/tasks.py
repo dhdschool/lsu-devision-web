@@ -36,7 +36,7 @@ def process_image_task(image_bytes, model_name: str, annotate: bool=True, image_
             
             annotated = AnnotatedImage.objects.create(name=f"{filename_stem}",
                                                         class_color_map=color_map)
-            annotated.image.save('result.jpg', ContentFile(buffer.read()), save=True)
+            annotated.image.save('result.jpg', ContentFile(buffer.read()), save=False)
             annotated.save()
             
         else:
