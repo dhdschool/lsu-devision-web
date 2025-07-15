@@ -29,10 +29,13 @@ if %ERRORLEVEL% NEQ 0 (
 
     if exist "%dockerInstaller%" del /f /q "%dockerInstaller%"
 
-    powershell -Command "https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe" `
-        -OutFile $dockerInstaller `
-        -UseBasicParsing `
-        -Headers @{'User-Agent' = 'Mozilla/5.0'}
+    set "DOWNLOAD_URL=https://desktop.docker.com/win/main/amd64/Docker Desktop Installer.exe"
+
+    powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+    "$url = '%DOWNLOAD_URL%';" ^
+    "$output = '%dockerInstaller%';" ^
+    "Invoke-WebRequest -Uri $url -OutFile $output -Headers @{ 'User-Agent' = 'Mozilla/5.0' };" ^
+    "Start-Process -FilePath $output -ArgumentList 'install','--quiet' -Wait"     
 
     echo Installing Docker Desktop silently...
     "%dockerInstaller%" install --quiet
