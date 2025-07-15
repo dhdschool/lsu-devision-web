@@ -25,11 +25,17 @@ where "Docker Desktop.exe" >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo Installing docker desktop
 
-    set "dockerInstaller=%TEMP%\DockerDesktopInstaller.exe"
+    if "%TEMP%"=="" (
+        set "INSTALL_DIR=%USERPROFILE%\Downloads"
+    ) else (
+        set "INSTALL_DIR=%TEMP%"
+    )
+
+    set "dockerInstaller=%INSTALL_DIR%\DockerDesktopInstaller.exe"
 
     if exist "%dockerInstaller%" del /f /q "%dockerInstaller%"
 
-    set "DOWNLOAD_URL=https://desktop.docker.com/win/main/amd64/Docker Desktop Installer.exe"
+    set "DOWNLOAD_URL=https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe"
 
     powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "$url = '%DOWNLOAD_URL%';" ^
