@@ -35,7 +35,7 @@ if %ERRORLEVEL% NEQ 0 (
 
     if exist "%dockerInstaller%" del /f /q "%dockerInstaller%"
 
-    set "DOWNLOAD_URL=https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe"
+    set "DOWNLOAD_URL=https://desktop.docker.com/win/main/amd64/Docker%%20Desktop%%20Installer.exe"
 
     powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "$url = '%DOWNLOAD_URL%';" ^
