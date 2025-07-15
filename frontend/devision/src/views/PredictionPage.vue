@@ -70,19 +70,23 @@ function handleInput() {
     selectedImage.value = loadedImages.value[loadedImages.value.length - 1];
   }
   // uncomment this line when it is time to communicate with the back end
-  //sendImages()
+  sendImages()
 }
 //Send images to the back end
 function sendImages() {
-  axios.post('http://localhost:8000/predict', loadedImages.value)
-    .then(function (response: AxiosResponse){
-      console.log('Sent!');
-      console.log(response.data);
-    })
-    .catch(function (response: AxiosResponse){
-      console.log(response.data);
-    })
+  for (images of loadedImages.value) {
+    const {data} = await.axios.post('http://localhost:8000/api/predict/',
+      {
+        image: images.url,
+        image_name: images.filename,
+        model_name: 'fill in value',
+        annotate: true
+      }
+    )
+
+  }
 }
+
 //show submit button when called
 function showSubmit(): void {
   canSubmit.value = true;

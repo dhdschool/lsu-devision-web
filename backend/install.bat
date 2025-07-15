@@ -41,7 +41,7 @@ if %ERRORLEVEL% NEQ 0 (
     "$url = '%DOWNLOAD_URL%';" ^
     "$output = '%dockerInstaller%';" ^
     "Invoke-WebRequest -Uri $url -OutFile $output -Headers @{ 'User-Agent' = 'Mozilla/5.0' };" ^
-    "Start-Process -FilePath $output -ArgumentList 'install','--quiet' -Wait"     
+    "Start-Process -FilePath $output -ArgumentList 'install','--quiet' -Wait"
 
     echo Installing Docker Desktop silently...
     "%dockerInstaller%" install --quiet
@@ -92,4 +92,3 @@ echo To stop containers: docker-compose down
 
 pause
 endlocal
-
