@@ -13,7 +13,7 @@ import type { images } from '@/components/images';
 //constants section
 
 //Model selection logic
-const modelSelectItems = ["Model 1", "Model 2", "Model 3"]
+const modelSelectItems = ["frog-egg-counter", "oyster_2-4mm", "oyster_4-6mm","xenopus-4-class"]
 //holds value for currently displayed image
 const selectedImage = ref<images | null>(null);
 // Array for storing images
@@ -70,15 +70,15 @@ function handleInput() {
     selectedImage.value = loadedImages.value[loadedImages.value.length - 1];
   }
   // uncomment this line when it is time to communicate with the back end
-  sendImages()
+  //sendImages()
 }
 //Send images to the back end
-function sendImages() {
-  for (images of loadedImages.value) {
-    const {data} = await.axios.post('http://localhost:8000/api/predict/',
+async function sendImages() {
+  for (const image of loadedImages.value) {
+    const {data} = await axios.post('http://localhost:8000/api/predict/',
       {
-        image: images.url,
-        image_name: images.filename,
+        image: image.url,
+        image_name: image.filename,
         model_name: 'fill in value',
         annotate: true
       }
