@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BImg, BButton, BProgress } from 'bootstrap-vue-next';
+import { BProgress } from 'bootstrap-vue-next';
 import ImageFrame from "@/components/ImageFrame.vue";
 import DropdownList from "@/components/DropdownList.vue";
 import ImageSidebar from "@/components/ImageSidebar.vue";
@@ -83,7 +83,6 @@ function sendImages() {
       console.log(response.data);
     })
 }
-
 //show submit button when called
 function showSubmit(): void {
   canSubmit.value = true;
@@ -151,7 +150,8 @@ function exportPrediction(): void {
     </div>
     <!-- Image Selection Button -->
     <div id="selectMoreButton">
-      <input type="file" id="input" ref="fileInput" multiple @click="showSubmit" >
+      <input class= "input" type="file" id="input" ref="fileInput" multiple @click="showSubmit" aria-label="Upload Image">
+
       <div v-if="canSubmit === true">
         <button class="button" @click="handleInput">Submit</button>
       </div>
