@@ -14,6 +14,8 @@ import type { images } from '@/components/images';
 
 //Model selection logic
 const modelSelectItems = ["frog-egg-counter", "oyster_2-4mm", "oyster_4-6mm","xenopus-4-class"]
+//holds model selction value
+const modelSelection = ref<string>("Select a model");
 //holds value for currently displayed image
 const selectedImage = ref<images | null>(null);
 // Array for storing images
@@ -26,6 +28,15 @@ const storeIndex = ref(0)
 const fileInput = ref<HTMLInputElement | null>(null);
 // boolean value to determine if the submit button should be enabled
 const canSubmit = ref(false);
+// tracks the polling interval
+const pollingInterval = ref<number | null>(null);
+// tracks the procsessing status
+const isProcessing = ref(false);
+//tracks the task ID from the backend
+const processingTaskID = ref<string | null>(null);
+//stores the predcition results
+const processedImages = ref<{ [key: string]: string }> ({});
+
 
 const removeAllImages = () => {
   loadedImages.value = [];
@@ -38,6 +49,10 @@ const removeImage = (id: number) => {
   if (idx !== -1){
     loadedImages.value.splice(idx, 1)
   }
+}
+function selectModel(model: string) {
+  modelSelection.value = model;
+  console.log("Selected model:", modelSelection.value)
 }
 function next():void {
   if (currentIndex.value < loadedImages.value.length - 1){
@@ -70,23 +85,88 @@ function handleInput() {
     selectedImage.value = loadedImages.value[loadedImages.value.length - 1];
   }
   // uncomment this line when it is time to communicate with the back end
-  //sendImages()
 }
 //Send images to the back end
 async function sendImages() {
-  for (const image of loadedImages.value) {
-    const {data} = await axios.post('http://localhost:8000/api/predict/',
-      {
-        image: image.url,
-        image_name: image.filename,
-        model_name: 'fill in value',
-        annotate: true
-      }
-    )
-
+  if (modelSelection.value === "Select a model") {
+    alert("Please select a model");
+    return;
   }
+  if (loadedImages.value.length === 0) {
+    alert("Please upload an image");
+    return;
+  }
+  isProcessing.value = true;
+  processedImages.value = {}; // clear previous results
+  try{
+    //process images one by one
+    for (const image of loadedImages.value) {
+      //check if the image has already been processed
+      if (processedImages.value[image.filename]) continue;
+      const response = await axios.post('http://localhost:8000/api/predict/',
+        {
+          image: image.url,
+          image_name: image.filename,
+          model_name: modelSelection.value,
+          annotate: true
+        });
+      const taskID = response.data.task_id;
+      await pollForImageResult(taskID, image.filename);
+    }
+    //after all images have been processed
+    isProcessing.value = false;
+    alert("All images have been processed");
+  }
+  //catch any errors
+  catch (error) {
+    console.error("Error processing images:", error);
+    //upon faulure
+    isProcessing.value = false;
+    alert("Prediction failed");
+    }
 }
+async function pollForImageResult(taskID: string, filename: string): Promise<void> {
+  return new Promise((resolve) => {
+    const maxAttempts = 30; // max number of attempts, one min max per image
+    let attempts = 0;
 
+    const poll = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/results/${taskID}`);
+
+        if (response.data.status === "completed") {
+          processedImages.value[filename] = response.data.result;
+          resolve();
+        }
+        else if (response.data.status === "failed") {
+          console.error(`Image processing failed: ${filename}`, response.data.error);
+          resolve(); //Resolve to continue to the next image
+        }
+        else if (attempts >= maxAttempts) {
+          console.error(`Image processing timed out: ${filename}`);
+          resolve(); //Resolve to continue to the next image
+        }
+        else {
+          attempts++;
+          setTimeout(poll, 2000); // Poll again after 1 second
+        }
+      }
+      catch (error) {
+        console.error(`Error polling for image result: ${filename}`, error);
+        if (attempts >= maxAttempts) {
+          console.error(`Image processing timed out: ${filename}`);
+          resolve(); //Resolve to continue to the next image
+        }
+        else {
+          attempts++;
+          setTimeout(poll, 2000); // Poll again after 1 second
+        }
+      }
+      };
+    //start polling
+    poll();
+  })
+}
 //show submit button when called
 function showSubmit(): void {
   canSubmit.value = true;
@@ -94,7 +174,7 @@ function showSubmit(): void {
 
 // Prediction actions
 function predict(): void {
-  console.log("Prediction button pressed");
+  sendImages();
 }
 
 function exportPrediction(): void {
@@ -107,9 +187,29 @@ function exportPrediction(): void {
   <main>
 
     <h1>Prediction Page</h1>
-    <!--create dropdown list for model selection. Model selection logic can come later-->
+    <!--popup for image selection-->
+    <div v-if="isProcessing" class="processing-status">
+      <h3>Processing Images</h3>
+      <div v-for="(image, index) in loadedImages" :key="index" class="image-status">
+        {{image.filename}}
+        <span v-if="processedImages[image.filename]">
+          Done
+        </span>
+        <span v-else>
+          Processing...
+        </span>
+      </div>
+    </div>
+    <!--display processed images-->
+    <div v-if="!isProcessing && Object.keys(processedImages).length > 0" class="processed-results">
+      <h3>ProcessedResults</h3>
+      <div v-for="(imageData, filename) in processedImages" :key="filename" class="result-item">
+        <h4>{{ filename }}</h4>
+        <img :src="imageData" :alt="'Processed ' + filename" class="processed-image"/>
+      </div>
+    </div>
     <div class="section" id="top">
-      <DropdownList :items="modelSelectItems" />
+      <DropdownList :items="modelSelectItems" :label= "modelSelection" @select="selectModel" />
       <div id="predictButton">
         <Button class="button" @click="predict">Prediction</Button>
       </div>
@@ -230,5 +330,24 @@ function exportPrediction(): void {
   height: 100px;
   background-color: yellowgreen;
   margin: 10px;
+}
+.processing-status {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.processing-status div {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 4px;
+}
+.processed-image {
+  max-width: 100%;
+  margin-top: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 </style>
