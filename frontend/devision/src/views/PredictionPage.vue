@@ -1,29 +1,64 @@
 <script setup lang="ts">
-import { BImg, BButton, BProgress } from 'bootstrap-vue-next';
+import { BProgress } from 'bootstrap-vue-next';
 import ImageFrame from "@/components/ImageFrame.vue";
 import DropdownList from "@/components/DropdownList.vue";
 import ImageSidebar from "@/components/ImageSidebar.vue";
 import StatsSidebar from "@/components/StatsSidebar.vue";
 import { ref } from 'vue';
+import type {AxiosResponse} from "axios";
+import axios from 'axios';
+import type { images } from '@/components/images';
 
-// Model selection
-const dropDownListItems = ["Option 1", "Option 2", "Option 3"];
-// Selected images
 
-interface Image {
-  filename: string;
-  index: number;
-  url: string;
-}
-//Images will be loaded into this array
-const loadedImages = ref<Image[]>([]);
+//constants section
+
+//Model selection logic
+const modelSelectItems = ["Model 1", "Model 2", "Model 3"]
+//holds value for currently displayed image
+const selectedImage = ref<images | null>(null);
+// Array for storing images
+const loadedImages = ref<images[]>([]);
 //Index for accessing the array
 const currentIndex = ref(0)
+//Index for adding values to the array
 const storeIndex = ref(0)
 //Input variable for file uploading, will be set to null when no file is uploaded
 const fileInput = ref<HTMLInputElement | null>(null);
-let index: number = 1;
+// boolean value to determine if the submit button should be enabled
+const canSubmit = ref(false);
 
+const removeAllImages = () => {
+  loadedImages.value = [];
+  currentIndex.value = 0;
+}
+// Popup trigger for ImageSelect component
+const showImageSelect = ref(false);
+const removeImage = (id: number) => {
+  const idx = loadedImages.value.findIndex(item => item.index === id)
+  if (idx !== -1){
+    loadedImages.value.splice(idx, 1)
+  }
+}
+function next():void {
+  if (currentIndex.value < loadedImages.value.length - 1){
+    currentIndex.value++;
+  } else{
+    currentIndex.value = 0;
+  }
+  updateSelectedImage()
+}
+function previous():void {
+  if (currentIndex.value > 0) {
+    currentIndex.value--;
+  } else{
+    currentIndex.value = loadedImages.value.length - 1;
+  }
+  updateSelectedImage()
+}
+function updateSelectedImage() {
+  selectedImage.value = loadedImages.value[currentIndex.value];
+}
+//Images will be loaded into this array
 function handleInput() {
   const files = fileInput.value?.files;
   if (files) {
@@ -32,86 +67,69 @@ function handleInput() {
       loadedImages.value.push({filename: file.name, index: storeIndex.value,url: url});
       storeIndex.value++;
     }
+    selectedImage.value = loadedImages.value[loadedImages.value.length - 1];
   }
+  // uncomment this line when it is time to communicate with the back end
+  //sendImages()
 }
-
-const canSubmit = ref(false);
+//Send images to the back end
+function sendImages() {
+  axios.post('http://localhost:8000/predict', loadedImages.value)
+    .then(function (response: AxiosResponse){
+      console.log('Sent!');
+      console.log(response.data);
+    })
+    .catch(function (response: AxiosResponse){
+      console.log(response.data);
+    })
+}
 //show submit button when called
 function showSubmit(): void {
   canSubmit.value = true;
 }
-
-// Popup trigger for ImageSelect component
-const showImageSelect = ref(false);
 
 // Prediction actions
 function predict(): void {
   console.log("Prediction button pressed");
 }
 
-// Prediction actions
-function clear(): void {
-  loadedImages.value = [];
-  currentIndex.value = 0;
-  console.log("Clear button pressed");
-}
-
-function exportPrediciton(): void {
+function exportPrediction(): void {
   console.log("Export pressed");
 }
 
-// Image navigation
-function next(): void {
-  if (currentIndex.value < loadedImages.value.length - 1) currentIndex.value++;
-}
-
-function previous(): void {
-  if (currentIndex.value > 0) currentIndex.value--;
-}
-
-// ImageSelect dialog handlers
-function selectMore(): void {
-  console.log('Does nothing');
-}
-
-function closeImageSelect(): void {
-  showImageSelect.value = false;
-}
 </script>
 
 <template>
   <main>
+
     <h1>Prediction Page</h1>
-    <p>Under Construction</p>
-    <!-- Model Selection and Actions -->
+    <!--create dropdown list for model selection. Model selection logic can come later-->
     <div class="section" id="top">
-      <DropdownList :items="dropDownListItems" />
+      <DropdownList :items="modelSelectItems" />
       <div id="predictButton">
-        <BButton pill @click="predict">Prediction</BButton>
+        <Button class="button" @click="predict">Prediction</Button>
       </div>
       <div id="clearButton">
-        <BButton pill @click="clear">Clear</BButton>
+        <button class="button" @click = "removeAllImages">Clear</button>
       </div>
       <div id="exportButton">
-        <BButton pill @click="exportPrediciton">Export</BButton>
+        <Button class="button" @click="exportPrediction">Export</Button>
       </div>
     </div>
 
-    <!-- Sidebars -->
-    <div id="leftSidebar">
-      <!-- < ImageSidebar :list-items="loadedImages" />-->
+    <div id = leftSidebar>
+      <image-sidebar :list-items="loadedImages" :selected="selectedImage" @remove="removeImage"></image-sidebar>
     </div>
-
-    <div id="rightSidebar">
-      <StatsSidebar />
+    <div id = rightSidebar>
+      <stats-sidebar></stats-sidebar>
     </div>
 
     <!-- Image Preview Frame -->
     <div id="middle">
-      <div class="box">
+      <div>
         <ImageFrame :imageSrc="loadedImages[currentIndex.valueOf()]?.url" />
       </div>
-      <div class="box">
+      <div>
         <ImageFrame placeholder-text="Waiting on Prediction" />
       </div>
     </div>
@@ -119,24 +137,23 @@ function closeImageSelect(): void {
     <!-- Navigation Controls -->
     <div id="bottom">
       <div id="previousButton">
-        <BButton pill @click="previous">Previous</BButton>
+        <Button class="button" @click="previous">Previous</Button>
       </div>
-      <div id="oyster"></div>
+      <!--<div id="oyster"></div>-->
       <div id="nextButton">
-        <BButton pill @click="next">Next</BButton>
+        <Button class="button" @click="next">Next</Button>
       </div>
     </div>
-
     <!-- Progress Bar -->
     <div id="progressBar">
-      <BProgress :value="(currentIndex + 1) / loadedImages.length * 100 || 0" />
+      <BProgress :value="(currentIndex + 1) / loadedImages.length * 100 || 0" /> <!-- Replace with actual progress, supposed to be used for predictions -->
     </div>
-
-    <!-- Select More Button -->
+    <!-- Image Selection Button -->
     <div id="selectMoreButton">
-      <input type="file" id="input" ref="fileInput" multiple @click="showSubmit">
+      <input class= "input" type="file" id="input" ref="fileInput" multiple @click="showSubmit" aria-label="Upload Image">
+
       <div v-if="canSubmit === true">
-        <button @click="handleInput">Submit</button>
+        <button class="button" @click="handleInput">Submit</button>
       </div>
     </div>
   </main>
@@ -148,51 +165,44 @@ function closeImageSelect(): void {
   display: flex
 }
 
+.box {
+/* leave empty */
+}
 #progressBar{
-
 }
 
 #leftSidebar{
   width: 10vw;
   min-height:60vh;
   position: absolute; left: 0px; top: 37px;
-
 }
-
 #rightSidebar{
   width: 10vw;
   min-height:60vh;
-  position: absolute; right: 0px; top: 37px;
+  position: absolute; right: 0px; top: 90px;
 }
-
 #top{
   margin: 10px auto;
   align-items: center;
   justify-content: space-around;
 }
-
 #middle{
   margin: 10px;
   align-items: center;
   justify-content: space-around;
   display: flex
 }
-
 #bottom{
   width: auto;
   display: flex;
   justify-content:space-between
-
 }
-
 #modelSelect{
   margin: 5px;
 }
-
 #predictButton{
   margin: 5px;
 }
-
 #clearButton{
   margin: 5px;
 }
@@ -200,26 +210,21 @@ function closeImageSelect(): void {
 #exportButton{
   margin: 5px;
 }
-
 #previousButton{
   margin: 25px
 }
-
 #nextButton{
   margin: 25px
 }
-
 #selectMoreButton{
   width: 10vw;
   margin-top: 10px;
   position: absolute; left: 0px
 }
-
 #oyster{
   width: 100px;
   height: 100px;
   background-color: yellowgreen;
   margin: 10px;
 }
-
 </style>
