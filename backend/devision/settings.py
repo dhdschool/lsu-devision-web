@@ -125,8 +125,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGNS = True # Dev 
-#CORS_ALLOWED_ORIGINS = [f"http://localhost:{port_number}"]
+CORS_ALLOW_ALL_ORIGINS = True # Dev
+#CORS_ALLOWED_ORIGINS = [f"http://localhost:{5173}"]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
