@@ -1,92 +1,117 @@
 <script setup lang="ts">
+// 🧭 Imports and Setup
 import { BProgress } from 'bootstrap-vue-next';
 import ImageFrame from "@/components/ImageFrame.vue";
 import DropdownList from "@/components/DropdownList.vue";
 import ImageSidebar from "@/components/ImageSidebar.vue";
 import StatsSidebar from "@/components/StatsSidebar.vue";
 import { ref } from 'vue';
-import type {AxiosResponse} from "axios";
+import type { AxiosResponse } from "axios";
 import axios from 'axios';
 import type { images } from '@/components/images';
 
 
-//constants section
+// 📌 Reactive State Definitions
 
-//Model selection logic
-const modelSelectItems = ["frog-egg-counter", "oyster_2-4mm", "oyster_4-6mm","xenopus-4-class"]
-//holds model selction value
+// Available model names for user selection
+const modelSelectItems = ["frog-egg-counter", "oyster_2-4mm", "oyster_4-6mm", "xenopus-4-class"]
+
+// Currently selected model; default prompt displayed initially
 const modelSelection = ref<string>("Select a model");
-//holds value for currently displayed image
+
+// Tracks the image currently displayed in the preview frame
 const selectedImage = ref<images | null>(null);
-// Array for storing images
+
+// Stores the list of uploaded images
 const loadedImages = ref<images[]>([]);
-//Index for accessing the array
-const currentIndex = ref(0)
-//Index for adding values to the array
-const storeIndex = ref(0)
-//Input variable for file uploading, will be set to null when no file is uploaded
+
+// Index used to display images from the list
+const currentIndex = ref(0);
+
+// Unique index used for assigning new image entries
+const storeIndex = ref(0);
+
+// Reference to the file input element for image uploading
 const fileInput = ref<HTMLInputElement | null>(null);
-// boolean value to determine if the submit button should be enabled
+
+// Controls whether the submit button is visible
 const canSubmit = ref(false);
-// tracks the polling interval
+
+// Tracks the polling interval for checking backend status (if applicable)
 const pollingInterval = ref<number | null>(null);
-// tracks the procsessing status
+
+// Flags whether image predictions are currently being processed
 const isProcessing = ref(false);
-//tracks the task ID from the backend
+
+// Stores the task ID returned by the backend for tracking async jobs
 const processingTaskID = ref<string | null>(null);
-//stores the predcition results
-const processedImages = ref<{ [key: string]: string }> ({});
 
+// Stores processed image results returned from backend
+const processedImages = ref<{ [key: string]: string }>({});
 
+// 📦 Utility Functions
+
+// Clears the image list and resets preview index
 const removeAllImages = () => {
   loadedImages.value = [];
   currentIndex.value = 0;
-}
-// Popup trigger for ImageSelect component
+};
+
+// Controls visibility of image selection popup (if implemented)
 const showImageSelect = ref(false);
+
+// Removes a specific image from the loaded list based on ID
 const removeImage = (id: number) => {
-  const idx = loadedImages.value.findIndex(item => item.index === id)
-  if (idx !== -1){
-    loadedImages.value.splice(idx, 1)
+  const idx = loadedImages.value.findIndex(item => item.index === id);
+  if (idx !== -1) {
+    loadedImages.value.splice(idx, 1);
   }
-}
+};
+
+// Updates selected model when a user chooses one from the dropdown
 function selectModel(model: string) {
   modelSelection.value = model;
-  console.log("Selected model:", modelSelection.value)
+  console.log("Selected model:", modelSelection.value);
 }
-function next():void {
-  if (currentIndex.value < loadedImages.value.length - 1){
-    currentIndex.value++;
-  } else{
-    currentIndex.value = 0;
-  }
-  updateSelectedImage()
+
+// Moves to the next image in the preview carousel
+function next(): void {
+  currentIndex.value = (currentIndex.value + 1) % loadedImages.value.length;
+  updateSelectedImage();
 }
-function previous():void {
-  if (currentIndex.value > 0) {
-    currentIndex.value--;
-  } else{
-    currentIndex.value = loadedImages.value.length - 1;
-  }
-  updateSelectedImage()
+
+// Moves to the previous image in the preview carousel
+function previous(): void {
+  currentIndex.value =
+    currentIndex.value > 0
+      ? currentIndex.value - 1
+      : loadedImages.value.length - 1;
+  updateSelectedImage();
 }
+
+// Updates selectedImage to match the current index
 function updateSelectedImage() {
   selectedImage.value = loadedImages.value[currentIndex.value];
 }
-//Images will be loaded into this array
+
+// Handles image file input; generates preview URLs and stores metadata
 function handleInput() {
   const files = fileInput.value?.files;
   if (files) {
     for (const file of files) {
       const url = URL.createObjectURL(file);
-      loadedImages.value.push({filename: file.name, index: storeIndex.value,url: url});
+      loadedImages.value.push({
+        filename: file.name,
+        index: storeIndex.value,
+        url: url,
+      });
       storeIndex.value++;
     }
     selectedImage.value = loadedImages.value[loadedImages.value.length - 1];
   }
-  // uncomment this line when it is time to communicate with the back end
 }
-//Send images to the back end
+
+// Sends images to backend for model prediction and triggers polling
 async function sendImages() {
   if (modelSelection.value === "Select a model") {
     alert("Please select a model");
@@ -96,91 +121,92 @@ async function sendImages() {
     alert("Please upload an image");
     return;
   }
+
   isProcessing.value = true;
-  processedImages.value = {}; // clear previous results
-  try{
-    //process images one by one
+  processedImages.value = {}; // Reset previous results
+
+  try {
     for (const image of loadedImages.value) {
-      //check if the image has already been processed
       if (processedImages.value[image.filename]) continue;
-      const response = await axios.post('http://localhost:8000/api/predict/',
-        {
-          image: image.url,
-          image_name: image.filename,
-          model_name: modelSelection.value,
-          annotate: true
-        });
+
+      const response = await axios.post("http://localhost:8000/api/predict/", {
+        image: image.url,
+        image_name: image.filename,
+        model_name: modelSelection.value,
+        annotate: true,
+      });
+
       const taskID = response.data.task_id;
       await pollForImageResult(taskID, image.filename);
     }
-    //after all images have been processed
+
     isProcessing.value = false;
     alert("All images have been processed");
-  }
-  //catch any errors
-  catch (error) {
+  } catch (error) {
     console.error("Error processing images:", error);
-    //upon faulure
     isProcessing.value = false;
     alert("Prediction failed");
-    }
+  }
 }
-async function pollForImageResult(taskID: string, filename: string): Promise<void> {
+
+// Polls backend for task completion, then stores prediction result
+async function pollForImageResult(
+  taskID: string,
+  filename: string
+): Promise<void> {
   return new Promise((resolve) => {
-    const maxAttempts = 30; // max number of attempts, one min max per image
+    const maxAttempts = 30;
     let attempts = 0;
 
     const poll = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/results/${taskID}`);
+        const response = await axios.get(
+          `http://localhost:8000/api/results/${taskID}`
+        );
 
         if (response.data.status === "completed") {
           processedImages.value[filename] = response.data.result;
           resolve();
-        }
-        else if (response.data.status === "failed") {
+        } else if (response.data.status === "failed") {
           console.error(`Image processing failed: ${filename}`, response.data.error);
-          resolve(); //Resolve to continue to the next image
-        }
-        else if (attempts >= maxAttempts) {
+          resolve();
+        } else if (attempts >= maxAttempts) {
           console.error(`Image processing timed out: ${filename}`);
-          resolve(); //Resolve to continue to the next image
-        }
-        else {
+          resolve();
+        } else {
           attempts++;
-          setTimeout(poll, 2000); // Poll again after 1 second
+          setTimeout(poll, 2000);
         }
-      }
-      catch (error) {
-        console.error(`Error polling for image result: ${filename}`, error);
+      } catch (error) {
+        console.error(`Polling error for image result: ${filename}`, error);
         if (attempts >= maxAttempts) {
           console.error(`Image processing timed out: ${filename}`);
-          resolve(); //Resolve to continue to the next image
-        }
-        else {
+          resolve();
+        } else {
           attempts++;
-          setTimeout(poll, 2000); // Poll again after 1 second
+          setTimeout(poll, 2000);
         }
       }
-      };
-    //start polling
+    };
+
     poll();
-  })
+  });
 }
-//show submit button when called
+
+// Enables the image submit button once user interacts with upload input
 function showSubmit(): void {
   canSubmit.value = true;
 }
 
-// Prediction actions
+// 🔘 Prediction Trigger
 function predict(): void {
   sendImages();
 }
 
+// 🗂 Export Button Action (placeholder)
 function exportPrediction(): void {
   console.log("Export pressed");
 }
-
 </script>
 
 <template>
@@ -208,6 +234,7 @@ function exportPrediction(): void {
         <img :src="imageData" :alt="'Processed ' + filename" class="processed-image"/>
       </div>
     </div>
+    <!-- Top section -->
     <div class="section" id="top">
       <DropdownList :items="modelSelectItems" :label= "modelSelection" @select="selectModel" />
       <div id="predictButton">
@@ -219,8 +246,15 @@ function exportPrediction(): void {
       <div id="exportButton">
         <Button class="button" @click="exportPrediction">Export</Button>
       </div>
-    </div>
+      <div id="selectMoreButton" class="selectMoreButton">
+      <input class= "input" type="file" id="input" ref="fileInput" multiple @click="showSubmit" aria-label="Upload Image">
 
+      <div v-if="canSubmit === true">
+        <button class="button" @click="handleInput">Submit</button>
+      </div>
+    </div>
+    </div>
+<!-- Sidebars -->
     <div id = leftSidebar>
       <image-sidebar :list-items="loadedImages" :selected="selectedImage" @remove="removeImage"></image-sidebar>
     </div>
@@ -251,14 +285,6 @@ function exportPrediction(): void {
     <!-- Progress Bar -->
     <div id="progressBar">
       <BProgress :value="(currentIndex + 1) / loadedImages.length * 100 || 0" /> <!-- Replace with actual progress, supposed to be used for predictions -->
-    </div>
-    <!-- Image Selection Button -->
-    <div id="selectMoreButton">
-      <input class= "input" type="file" id="input" ref="fileInput" multiple @click="showSubmit" aria-label="Upload Image">
-
-      <div v-if="canSubmit === true">
-        <button class="button" @click="handleInput">Submit</button>
-      </div>
     </div>
   </main>
 </template>
@@ -349,5 +375,13 @@ function exportPrediction(): void {
   margin-top: 1rem;
   border: 1px solid #ddd;
   border-radius: 4px;
+}
+.selectMoreButton{
+  width: 100%;  /* Changed from 10vw to take full width of parent */
+  margin: 10px auto;  /* Center the button */
+  position: relative;  /* Changed from absolute to relative */
+  left: auto;  /* Remove the left positioning */
+  padding: 0 10%;  /* Add some padding to prevent touching edges */
+  text-align: center;  /* Center the button content */
 }
 </style>
