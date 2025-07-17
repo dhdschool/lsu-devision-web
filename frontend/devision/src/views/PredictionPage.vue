@@ -6,7 +6,6 @@ import DropdownList from "@/components/DropdownList.vue";
 import ImageSidebar from "@/components/ImageSidebar.vue";
 import StatsSidebar from "@/components/StatsSidebar.vue";
 import { ref } from 'vue';
-import type { AxiosResponse } from "axios";
 import axios from 'axios';
 import type { images } from '@/components/images';
 
@@ -21,6 +20,9 @@ const modelSelection = ref<string>("Select a model");
 
 // Tracks the image currently displayed in the preview frame
 const selectedImage = ref<images | null>(null);
+
+// Tracks the image currently displayed in the prediction frame
+const selectedPredictedImage = ref<images | null>(null);
 
 // Stores the list of uploaded images
 const loadedImages = ref<images[]>([]);
@@ -47,7 +49,7 @@ const isProcessing = ref(false);
 const processingTaskID = ref<string | null>(null);
 
 // Stores processed image results returned from backend
-const processedImages = ref<{ [key: string]: string }>({});
+const processedImages = ref<images[]>([]);
 
 // 📦 Utility Functions
 
@@ -68,6 +70,15 @@ const removeImage = (id: number) => {
   }
 };
 
+// Updates selectedImage to match the current index
+function updateSelectedImage() {
+  selectedImage.value = loadedImages.value[currentIndex.value];
+}
+
+function updateSelectedPredictedImage() {
+  selectedPredictedImage.value = processedImages.value[currentIndex.value];
+}
+
 // Updates selected model when a user chooses one from the dropdown
 function selectModel(model: string) {
   modelSelection.value = model;
@@ -82,17 +93,14 @@ function next(): void {
 
 // Moves to the previous image in the preview carousel
 function previous(): void {
-  currentIndex.value =
-    currentIndex.value > 0
-      ? currentIndex.value - 1
-      : loadedImages.value.length - 1;
+  currentIndex.value = currentIndex.value > 0 ? currentIndex.value - 1 : loadedImages.value.length - 1;
   updateSelectedImage();
+  if (processedImages.value.length > 0) {
+    updateSelectedPredictedImage();
+
+  }
 }
 
-// Updates selectedImage to match the current index
-function updateSelectedImage() {
-  selectedImage.value = loadedImages.value[currentIndex.value];
-}
 
 // Handles image file input; generates preview URLs and stores metadata
 function handleInput() {
@@ -126,7 +134,7 @@ async function sendImages() {
   processedImages.value = {};
 
   try {
-    for (const image of loadedImages.value) {
+    for (const image of loadedImages.value as images[]) {
       if (processedImages.value[image.filename]) continue;
 
       try {
@@ -194,6 +202,7 @@ async function pollForImageResult(
         );
 
         if (response.data.status === "completed") {
+          console.log('Image processing completed:', filename, 'result:', response.data);
           processedImages.value[filename] = response.data.result;
           resolve();
         } else if (response.data.status === "failed") {
@@ -236,6 +245,7 @@ function predict(): void {
 function exportPrediction(): void {
   console.log("Export pressed");
 }
+
 </script>
 
 <template>
@@ -297,7 +307,7 @@ function exportPrediction(): void {
         <ImageFrame :imageSrc="loadedImages[currentIndex.valueOf()]?.url" />
       </div>
       <div>
-        <ImageFrame placeholder-text="Waiting on Prediction" />
+        <ImageFrame :imageSrc="processedImages[loadedImages[currentIndex]?.filename]?.annotated_image?.url" />
       </div>
     </div>
 
