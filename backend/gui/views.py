@@ -52,4 +52,7 @@ class PredictionResultView(APIView):
             return Response({'error': 'Result not found'}, status=status.HTTP_404_NOT_FOUND)
 
         data = PredictionModelSerializer(pred).data
-        return Response(data, status=status.HTTP_200_OK)
+        return Response({
+            'status': 'completed',
+            'result': data
+        }, status = status.HTTP_200_OK)

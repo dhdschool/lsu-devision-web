@@ -123,29 +123,58 @@ async function sendImages() {
   }
 
   isProcessing.value = true;
-  processedImages.value = {}; // Reset previous results
+  processedImages.value = {};
 
   try {
     for (const image of loadedImages.value) {
       if (processedImages.value[image.filename]) continue;
 
-      const response = await axios.post("http://localhost:8000/api/predict/", {
-        image: image.url,
-        image_name: image.filename,
-        model_name: modelSelection.value,
-        annotate: true,
-      });
+      try {
+        // Fetch the actual file data from the URL
+        const fileResponse = await fetch(image.url);
+        if (!fileResponse.ok) {
+          throw new Error(`Failed to fetch image: ${fileResponse.statusText}`);
+        }
 
-      const taskID = response.data.task_id;
-      await pollForImageResult(taskID, image.filename);
+        const blob = await fileResponse.blob();
+        const file = new File([blob], image.filename, { type: blob.type });
+
+        // Create FormData and append the file
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('image_name', image.filename);
+        formData.append('model_name', modelSelection.value);
+        formData.append('annotate', 'true');
+
+        const response = await axios.post("http://localhost:8000/api/predict/", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+
+        if (response.data?.task_id) {
+          await pollForImageResult(response.data.task_id, image.filename);
+        } else {
+          console.error('No task_id in response:', response.data);
+          throw new Error('Invalid response from server');
+        }
+      } catch (error) {
+        console.error(`Error processing image ${image.filename}:`, error);
+        // Continue with next image even if one fails
+        continue;
+      }
     }
 
     isProcessing.value = false;
-    alert("All images have been processed");
+    if (Object.keys(processedImages.value).length > 0) {
+      alert("Processing completed successfully!");
+    } else {
+      alert("No images were successfully processed");
+    }
   } catch (error) {
-    console.error("Error processing images:", error);
+    console.error("Error in sendImages:", error);
     isProcessing.value = false;
-    alert("Prediction failed");
+    alert("Prediction failed: " + (error.response?.data?.detail || error.message || 'Unknown error'));
   }
 }
 
@@ -161,7 +190,7 @@ async function pollForImageResult(
     const poll = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/results/${taskID}`
+          `http://localhost:8000/api/predict/status/${taskID}/`
         );
 
         if (response.data.status === "completed") {
@@ -178,7 +207,7 @@ async function pollForImageResult(
           setTimeout(poll, 2000);
         }
       } catch (error) {
-        console.error(`Polling error for image result: ${filename}`, error);
+        console.error(`Polling error for image ${filename}:`, error);
         if (attempts >= maxAttempts) {
           console.error(`Image processing timed out: ${filename}`);
           resolve();
