@@ -53,3 +53,8 @@ class PredictionResultView(APIView):
 
         data = PredictionModelSerializer(pred).data
         return Response(data, status=status.HTTP_200_OK)
+    
+def export_settings(request):
+    if request.method == 'POST':
+        return JsonResponse({'status': 'ok'})
+    return JsonResponse({'error': 'Invalid method'}, status = 405)

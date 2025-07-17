@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import  axios  from 'axios'
 
 type Toggle = {
   id: number
   name: string
   isActive: boolean
 }
+
 
 // Runtime toggle options
 const runtTimeToggle = ref<Toggle[]>([
@@ -48,6 +50,7 @@ function themeToggle(toggles: Toggle[], id: number): Toggle[] {
   }
 
   return updated
+
 }
 
 // Sync UI with saved theme on load
@@ -63,6 +66,19 @@ const settingsSections = [
   { id: 2, title: 'Model/Folder Default Settings', toggles: modelFolderToggle, toggleMethod: toggleSetting, field: 'text' },
   { id: 3, title: 'Appearance', toggles: AppearanceToggle, toggleMethod: themeToggle, field: 'checkbox' },
 ]
+function getSettings() {
+  axios.post('http://localhost:8000/api/settings/export', {
+    fistName: 'John',
+    lastName: 'Doe'
+    })
+    .then(function(response) {
+      console.log(response);
+    })    
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
 </script>
 
 <template>
@@ -91,6 +107,7 @@ const settingsSections = [
       </div>
     </div>
   </div>
+  <b-button @click="getSettings"/>
 </template>
 
 <style scoped>

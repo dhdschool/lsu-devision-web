@@ -39,3 +39,12 @@ class PredictionModel(models.Model):
         else:
             string = f"Prediction at {self.timestamp}"
         return string
+    
+class UserSettings(models.Model):
+    theme = models.CharField
+    runtimeToggle = models.BooleanField
+    folderToggle = models.BooleanField
+    appearanceToggle = models.BooleanField
+
+    def __str__(self):
+        return super().__str__()
