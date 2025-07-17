@@ -129,7 +129,7 @@ CORS_ALLOW_ALL_ORIGINS = True # Dev
 #CORS_ALLOWED_ORIGINS = [f"http://localhost:{5173}"]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
 CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://localhost:6379/0")

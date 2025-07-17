@@ -7,7 +7,7 @@ import ImageSidebar from "@/components/ImageSidebar.vue";
 import StatsSidebar from "@/components/StatsSidebar.vue";
 import { ref } from 'vue';
 import axios from 'axios';
-import type { images } from '@/components/images';
+import type { images, predictions } from '@/components/images';
 
 
 // 📌 Reactive State Definitions
@@ -33,6 +33,8 @@ const currentIndex = ref(0);
 // Unique index used for assigning new image entries
 const storeIndex = ref(0);
 
+// Unique index used for assigning new image entries
+const processingIndex = ref(0);
 // Reference to the file input element for image uploading
 const fileInput = ref<HTMLInputElement | null>(null);
 
@@ -49,7 +51,7 @@ const isProcessing = ref(false);
 const processingTaskID = ref<string | null>(null);
 
 // Stores processed image results returned from backend
-const processedImages = ref<images[]>([]);
+const processedImages = ref<predictions[]>([]);
 
 // 📦 Utility Functions
 
@@ -131,7 +133,7 @@ async function sendImages() {
   }
 
   isProcessing.value = true;
-  processedImages.value = {};
+  processedImages.value = <predictions[]>[];
 
   try {
     for (const image of loadedImages.value as images[]) {
@@ -203,7 +205,13 @@ async function pollForImageResult(
 
         if (response.data.status === "completed") {
           console.log('Image processing completed:', filename, 'result:', response.data);
-          processedImages.value[filename] = response.data.result;
+          processedImages.value.push({
+            filename: filename,
+            index: processingIndex.value,
+            url: `http://localhost:8000${response.data.result.annotated_image.image}`,
+            prediction: response.data.result.predictions
+          });
+          processingIndex.value++;
           resolve();
         } else if (response.data.status === "failed") {
           console.error(`Image processing failed: ${filename}`, response.data.error);
@@ -307,7 +315,7 @@ function exportPrediction(): void {
         <ImageFrame :imageSrc="loadedImages[currentIndex.valueOf()]?.url" />
       </div>
       <div>
-        <ImageFrame :imageSrc="processedImages[loadedImages[currentIndex]?.filename]?.annotated_image?.url" />
+        <ImageFrame :imageSrc="processedImages[currentIndex.valueOf()]?.url" />
       </div>
     </div>
 

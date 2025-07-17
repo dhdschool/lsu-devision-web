@@ -3,3 +3,7 @@ export interface images{
     index: number;
     url: string;
 }
+
+export interface predictions extends images{
+    prediction: number;
+}
