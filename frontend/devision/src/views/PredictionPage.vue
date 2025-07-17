@@ -57,8 +57,9 @@ const processedImages = ref<predictions[]>([]);
 
 // Clears the image list and resets preview index
 const removeAllImages = () => {
-  loadedImages.value = [];
+  loadedImages.value = <images[]>[];
   currentIndex.value = 0;
+  processedImages.value = <predictions[]>[];
 };
 
 // Controls visibility of image selection popup (if implemented)
@@ -91,6 +92,9 @@ function selectModel(model: string) {
 function next(): void {
   currentIndex.value = (currentIndex.value + 1) % loadedImages.value.length;
   updateSelectedImage();
+    if (processedImages.value.length > 0) {
+    updateSelectedPredictedImage();
+  }
 }
 
 // Moves to the previous image in the preview carousel
@@ -99,7 +103,6 @@ function previous(): void {
   updateSelectedImage();
   if (processedImages.value.length > 0) {
     updateSelectedPredictedImage();
-
   }
 }
 
@@ -209,7 +212,7 @@ async function pollForImageResult(
             filename: filename,
             index: processingIndex.value,
             url: `http://localhost:8000${response.data.result.annotated_image.image}`,
-            prediction: response.data.result.predictions
+            prediction: response.data.result.class_counts[1]
           });
           processingIndex.value++;
           resolve();
@@ -313,6 +316,9 @@ function exportPrediction(): void {
     <div id="middle">
       <div>
         <ImageFrame :imageSrc="loadedImages[currentIndex.valueOf()]?.url" />
+      </div>
+      <div v-if="processedImages.length > 0">
+        <h3>predicted number: {{processedImages[currentIndex.valueOf()]?.prediction }}</h3>
       </div>
       <div>
         <ImageFrame :imageSrc="processedImages[currentIndex.valueOf()]?.url" />
