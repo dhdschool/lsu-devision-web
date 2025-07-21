@@ -263,27 +263,6 @@ function exportPrediction(): void {
   <main>
 
     <h1>Prediction Page</h1>
-    <!--popup for image selection-->
-    <div v-if="isProcessing" class="processing-status">
-      <h3>Processing Images</h3>
-      <div v-for="(image, index) in loadedImages" :key="index" class="image-status">
-        {{image.filename}}
-        <span v-if="processedImages[image.filename]">
-          Done
-        </span>
-        <span v-else>
-          Processing...
-        </span>
-      </div>
-    </div>
-    <!--display processed images-->
-    <div v-if="!isProcessing && Object.keys(processedImages).length > 0" class="processed-results">
-      <h3>ProcessedResults</h3>
-      <div v-for="(imageData, filename) in processedImages" :key="filename" class="result-item">
-        <h4>{{ filename }}</h4>
-        <img :src="imageData" :alt="'Processed ' + filename" class="processed-image"/>
-      </div>
-    </div>
     <!-- Top section -->
     <div class="section" id="top">
       <DropdownList :items="modelSelectItems" :label= "modelSelection" @select="selectModel" />
@@ -297,8 +276,7 @@ function exportPrediction(): void {
         <Button class="button" @click="exportPrediction">Export</Button>
       </div>
       <div id="selectMoreButton" class="selectMoreButton">
-      <input class= "input" type="file" id="input" ref="fileInput" multiple @click="showSubmit" aria-label="Upload Image">
-
+      <input class= "input" type="file" accept="image/*" id="input" ref="fileInput" multiple @click="showSubmit" aria-label="Upload Image">
       <div v-if="canSubmit === true">
         <button class="button" @click="handleInput">Submit</button>
       </div>
@@ -338,6 +316,29 @@ function exportPrediction(): void {
     <!-- Progress Bar -->
     <div id="progressBar">
       <BProgress :value="(currentIndex + 1) / loadedImages.length * 100 || 0" /> <!-- Replace with actual progress, supposed to be used for predictions -->
+    </div>
+    <!--display processing status-->
+    <div v-if="isProcessing" class="processing-section">
+      <h3>Processing Images</h3>
+      <div class="processing-status">
+      <div v-for="(image, index) in loadedImages" :key="index" class="image-status">
+        {{image.filename}}
+        <span v-if="processedImages.find(p => p.filename === image.filename)">
+          Done
+        </span>
+        <span v-else>
+          Processing...
+        </span>
+      </div>
+      </div>
+    </div>
+    <!--display processed images-->
+    <div v-if="!isProcessing && Object.keys(processedImages).length > 0" class="processing-status">
+      <h3>Processed Results</h3>
+      <div v-for="(image, index) in loadedImages":key="index" class="image-status">
+        <h4>{{ image.filename }}</h4>
+        <span> Success </span>
+      </div>
     </div>
   </main>
 </template>
@@ -406,30 +407,36 @@ function exportPrediction(): void {
   margin-top: 10px;
   position: absolute; left: 0px
 }
-#oyster{
-  width: 100px;
-  height: 100px;
-  background-color: yellowgreen;
-  margin: 10px;
-}
 .processing-status {
   margin: 1rem 0;
   padding: 1rem;
   background: #f8f9fa;
   border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  top: 100px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.processing-status div {
+.image-status {
   margin: 0.5rem 0;
   padding: 0.5rem;
   background: white;
   border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.processed-image {
-  max-width: 100%;
-  margin-top: 1rem;
-  border: 1px solid #ddd;
+.processing-status div {
+   margin: 1rem auto; /* Center horizontally */
+  padding: 1rem;
+  background: #f8f9fa;
   border-radius: 4px;
+  max-height: 200px; /* Height for ~5 items */
+  overflow-y: auto; /* Enables vertical scrolling */
+  width: 80%; /* Takes up most of the center space but not all */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 .selectMoreButton{
   width: 100%;  /* Changed from 10vw to take full width of parent */
