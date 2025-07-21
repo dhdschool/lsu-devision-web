@@ -305,7 +305,7 @@ function exportPrediction(): void {
     </div>
     </div>
 <!-- Sidebars -->
-    <div id = leftSidebar>
+    <div id = leftSidebar class="leftSidebar">
       <image-sidebar :list-items="loadedImages" :selected="selectedImage" @remove="removeImage"></image-sidebar>
     </div>
     <div id = rightSidebar>
@@ -357,7 +357,9 @@ function exportPrediction(): void {
 #leftSidebar{
   width: 10vw;
   min-height:60vh;
-  position: absolute; left: 0px; top: 37px;
+  position: absolute;
+  left: 0px;
+  top: 90px;
 }
 #rightSidebar{
   width: 10vw;

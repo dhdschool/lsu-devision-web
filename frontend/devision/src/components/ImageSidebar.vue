@@ -49,5 +49,6 @@ function handleRemove2(index: number) {
     }
 
     .sidebar-item {
+
     }
 </style>
