@@ -42,9 +42,9 @@ class PredictionModel(models.Model):
     
 class UserSettings(models.Model):
     theme = models.CharField
-    runtimeToggle = models.BooleanField
-    folderToggle = models.BooleanField
-    appearanceToggle = models.BooleanField
+    autoExport = models.BooleanField
+    folderPath = models.CharField
+    model = models.CharField
 
     def __str__(self):
         return super().__str__()

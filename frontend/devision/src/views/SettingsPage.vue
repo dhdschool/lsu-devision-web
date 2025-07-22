@@ -107,7 +107,7 @@ function getSettings() {
       </div>
     </div>
   </div>
-  <b-button @click="getSettings"/>
+  <b-button @click="getSettings">Save Settings</b-button>
 </template>
 
 <style scoped>
