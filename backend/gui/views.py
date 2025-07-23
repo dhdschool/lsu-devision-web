@@ -6,6 +6,8 @@ from rest_framework import status, serializers
 from .serializers import PredictionRequestSerializer, PredictionModelSerializer
 from .tasks import process_image_task
 from django.conf import settings
+from django.views.decorators.http import require_http_methods
+from django.http import JsonResponse
 import os
 
 class SubmitPredictionView(APIView):
@@ -53,7 +55,8 @@ class PredictionResultView(APIView):
 
         data = PredictionModelSerializer(pred).data
         return Response(data, status=status.HTTP_200_OK)
-    
+
+@require_http_methods(["GET","POST"])
 def export_settings(request):
     if request.method == 'POST':
         return JsonResponse({'status': 'ok'})
