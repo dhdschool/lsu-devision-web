@@ -40,11 +40,12 @@ class PredictionModel(models.Model):
             string = f"Prediction at {self.timestamp}"
         return string
     
-class UserSettings(models.Model):
+class SettingsProfile(models.Model):
     theme = models.CharField
     autoExport = models.BooleanField
-    folderPath = models.CharField
-    model = models.CharField
+    defaultFolderPath = models.CharField
+    defaultModel = models.CharField
 
     def __str__(self):
         return super().__str__()
+    

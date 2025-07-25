@@ -58,6 +58,13 @@ class PredictionResultView(APIView):
 
 @require_http_methods(["GET","POST"])
 def export_settings(request):
-    if request.method == 'POST':
+    import json
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+        theme = data.get('theme')
+        save_model = data.get('save_model')
+        save_folder = data.get('save_folder')
+        # Save to Profile or handle as needed
         return JsonResponse({'status': 'ok'})
-    return JsonResponse({'error': 'Invalid method'}, status = 405)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import  axios  from 'axios'
+import { PassThrough } from 'stream'
+import { log } from 'console'
 
 type Toggle = {
   id: number
@@ -8,6 +10,9 @@ type Toggle = {
   isActive: boolean
 }
 
+
+const modelText = ref('')
+const folderText = ref('')
 
 // Runtime toggle options
 const runtTimeToggle = ref<Toggle[]>([
@@ -66,18 +71,53 @@ const settingsSections = [
   { id: 2, title: 'Model/Folder Default Settings', toggles: modelFolderToggle, toggleMethod: toggleSetting, field: 'text' },
   { id: 3, title: 'Appearance', toggles: AppearanceToggle, toggleMethod: themeToggle, field: 'checkbox' },
 ]
-function getSettings() {
+function saveSettingsBackend() {
+  console.log("Settings Backend")
+  /*
   axios.post('http://localhost:8000/api/settings/export', {
-    fistName: 'John',
-    lastName: 'Doe'
-    })
+    theme: AppearanceToggle.value.find(t => t.isActive)?.name === 'Dark Theme' ? 'theme-dark' : 'theme-light', save_model: modelFolderToggle.value.find(t => t.name === 'Save Model')?.isActive ?? false, save_folder: modelFolderToggle.value.find(t => t.name === 'Save Folder')?.isActive ?? false
+    });
     .then(function(response) {
       console.log(response);
     })    
     .catch(function (error) {
       console.log(error);
     });
+  */
+ 
 }
+
+function saveSettings() {
+  const settings = {
+    theme: AppearanceToggle.value.find(t => t.isActive)?.name === 'Dark Theme' ? 'theme-dark' : 'theme-light',
+    save_model: modelText.value,
+    save_folder: folderText.value
+    // Add more settings as needed
+  };
+  document.cookie = `user_settings=${encodeURIComponent(JSON.stringify(settings))};path=/;max-age=31536000`;
+  getSettingsFromCookie();
+
+  // Upload settings to backend
+  axios.post('http://localhost:8000/api/settings/export', settings)
+    .then(function(response) {
+      console.log('Settings uploaded:', response.data);
+    })
+    .catch(function (error) {
+      console.log('Upload failed:', error);
+    });
+}
+
+function getSettingsFromCookie() {
+  const match = document.cookie.match(/(^|;) ?user_settings=([^;]*)(;|$)/);
+  if (match) {
+    //return JSON.parse(decodeURIComponent(match[2]));
+    console.log(JSON.parse(decodeURIComponent(match[2])))
+  }
+
+  return null;
+}
+
+
 
 </script>
 
@@ -93,21 +133,37 @@ function getSettings() {
       <div v-for="toggle in section.toggles.value" :key="toggle.id">
         <label>
           <input
-            :type="section.field"
+            v-if="section.field === 'checkbox'"
+            type="checkbox"
             :name="'section-' + section.id"
             :checked="toggle.isActive"
             @change="section.toggles.value = section.toggleMethod(section.toggles.value, toggle.id)"
           />
-          {{ toggle.name }}
+          <span v-if="section.field === 'checkbox'">{{ toggle.name }}</span>
 
           <div v-if="section.field === 'text'">
-            <button class="save-button">Save</button>
+          
+          <input
+            v-if="toggle.name === 'Save Model'"
+            type="text"
+            v-model="modelText"
+            :placeholder="toggle.name"
+            />
+            <input
+            v-else-if="toggle.name === 'Save Folder'"
+            type="text"
+            v-model="folderText"
+            :placeholder="toggle.name"
+            />
+            <button class="save-button"
+            @click="toggle.name === 'Save Model'" 
+            >Save</button>
           </div>
         </label>
       </div>
     </div>
   </div>
-  <b-button @click="getSettings">Save Settings</b-button>
+  <b-button @click="saveSettings()">Save Settings</b-button>
 </template>
 
 <style scoped>

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import PredictionModel, AnnotatedImage, UserSettings
+from .models import PredictionModel, AnnotatedImage, SettingsProfile
 
 class PredictionRequestSerializer(serializers.Serializer):
     image = serializers.ImageField(required=True)
@@ -22,7 +22,7 @@ class PredictionModelSerializer(serializers.ModelSerializer):
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserSettings
+        model = SettingsProfile
         fields = ['theme', 'autoExport', 'folderPath', 'model']
 
         
