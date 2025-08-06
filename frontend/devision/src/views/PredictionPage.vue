@@ -27,11 +27,34 @@ const storeIndex = ref(0)
 const fileInput = ref<HTMLInputElement | null>(null);
 const canSubmit = ref(false);
 
+// Tracks the polling interval for checking backend status (if applicable)
+const pollingInterval = ref<number | null>(null);
+
+// Flags whether image predictions are currently being processed
+const isProcessing = ref(false);
+
+const progress = ref(0);
+
+const totalImages = ref(0);
+
+
+
+// Stores the task ID returned by the backend for tracking async jobs
+const processingTaskID = ref<string | null>(null);
+
+// Stores processed image results returned from backend
+const processedImages = ref<predictions[]>([]);
+
+// 📦 Utility Functions
+
+// Clears the image list and resets preview index
 const removeAllImages = () => {
   loadedImages.value = []
 }
 // Popup trigger for ImageSelect component
 const showImageSelect = ref(false);
+
+// Removes a specific image from the loaded list based on ID
 const removeImage = (id: number) => {
   const idx = loadedImages.value.findIndex(item => item.index === id)
   if (idx !== -1){
@@ -85,43 +108,146 @@ function handleInput() {
   if (files) {
     for (const file of files) {
       const url = URL.createObjectURL(file);
-      loadedImages.value.push({filename: file.name, index: storeIndex.value,url: url});
+      loadedImages.value.push({
+        filename: file.name,
+        index: storeIndex.value,
+        url: url,
+      });
       storeIndex.value++;
     }
     selectedImage.value = loadedImages.value[loadedImages.value.length - 1];
   }
-  //sendImages()
-}
-function sendImages() {
-  axios.post('http://localhost:8000/predict', loadedImages.value)
-    .then(function (response: AxiosResponse){
-      console.log('Sent!');
-      console.log(response.data);
-    })
-    .catch(function (response: AxiosResponse){
-      console.log(response.data);
-    })
 }
 
-//show submit button when called
+// Sends images to backend for model prediction and triggers polling
+async function sendImages() {
+  if (modelSelection.value === "Select a model") {
+    alert("Please select a model");
+    return;
+  }
+  if (loadedImages.value.length === 0) {
+    alert("Please upload an image");
+    return;
+  }
+
+  isProcessing.value = true;
+  processedImages.value = <predictions[]>[];
+
+  try {
+    for (const image of loadedImages.value as images[]) {
+      if (processedImages.value[image.filename]) continue;
+
+      try {
+        // Fetch the actual file data from the URL
+        const fileResponse = await fetch(image.url);
+        if (!fileResponse.ok) {
+          throw new Error(`Failed to fetch image: ${fileResponse.statusText}`);
+        }
+
+        const blob = await fileResponse.blob();
+        const file = new File([blob], image.filename, { type: blob.type });
+
+        // Create FormData and append the file
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('image_name', image.filename);
+        formData.append('model_name', modelSelection.value);
+        formData.append('annotate', 'true');
+
+        const response = await axios.post("http://localhost:8000/api/predict/", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+
+        if (response.data?.task_id) {
+          await pollForImageResult(response.data.task_id, image.filename);
+        } else {
+          console.error('No task_id in response:', response.data);
+          throw new Error('Invalid response from server');
+        }
+      } catch (error) {
+        console.error(`Error processing image ${image.filename}:`, error);
+        // Continue with next image even if one fails
+        continue;
+      }
+    }
+
+    isProcessing.value = false;
+    if (Object.keys(processedImages.value).length > 0) {
+      alert("Processing completed successfully!");
+    } else {
+      alert("No images were successfully processed");
+    }
+  } catch (error) {
+    console.error("Error in sendImages:", error);
+    isProcessing.value = false;
+    alert("Prediction failed: " + (error.response?.data?.detail || error.message || 'Unknown error'));
+  }
+}
+
+// Polls backend for task completion, then stores prediction result
+async function pollForImageResult(
+  taskID: string,
+  filename: string
+): Promise<void> {
+  return new Promise((resolve) => {
+    const maxAttempts = 30;
+    let attempts = 0;
+
+    const poll = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/predict/status/${taskID}/`
+        );
+
+        if (response.data.status === "completed") {
+          console.log('Image processing completed:', filename, 'result:', response.data);
+          processedImages.value.push({
+            filename: filename,
+            index: processingIndex.value,
+            url: `http://localhost:8000${response.data.result.annotated_image.image}`,
+            prediction: response.data.result.class_counts[1]
+          });
+          processingIndex.value++;
+          resolve();
+        } else if (response.data.status === "failed") {
+          console.error(`Image processing failed: ${filename}`, response.data.error);
+          resolve();
+        } else if (attempts >= maxAttempts) {
+          console.error(`Image processing timed out: ${filename}`);
+          resolve();
+        } else {
+          attempts++;
+          setTimeout(poll, 2000);
+        }
+      } catch (error) {
+        console.error(`Polling error for image ${filename}:`, error);
+        if (attempts >= maxAttempts) {
+          console.error(`Image processing timed out: ${filename}`);
+          resolve();
+        } else {
+          attempts++;
+          setTimeout(poll, 2000);
+        }
+      }
+    };
+
+    poll();
+  });
+}
+
+// Enables the image submit button once user interacts with upload input
 function showSubmit(): void {
   canSubmit.value = true;
 }
 
-
-
-// Prediction actions
+// 🔘 Prediction Trigger
 function predict(): void {
-  console.log("Prediction button pressed");
+  sendImages();
 }
 
-// Prediction actions
-function clear(): void {
-  loadedImages.value = [];
-  currentIndex.value = 0;
-  console.log("Clear button pressed");
-}
-
+// 🗂 Export Button Action (placeholder)
 function exportPrediction(): void {
   console.log("Export pressed");
 }
@@ -136,21 +262,27 @@ function closeImageSelect(): void {
   <main>
 
     <h1>Prediction Page</h1>
-    <!--create dropdown list for model selection. Model selection logic can come later-->
+    <!-- Top section -->
     <div class="section" id="top">
-      <DropdownList :items="modelSelectItems" />
+      <DropdownList :items="modelSelectItems" :label= "modelSelection" @select="selectModel" />
       <div id="predictButton">
-        <BButton pill @click="predict">Prediction</BButton>
+        <Button class="button" @click="predict">Prediction</Button>
       </div>
       <div id="clearButton">
-        <BButton pill @click = "removeAllImages">Clear</BButton>
+        <button class="button" @click = "removeAllImages">Clear</button>
       </div>
       <div id="exportButton">
-        <BButton pill @click="exportPrediction">Export</BButton>
+        <Button class="button" @click="exportPrediction">Export</Button>
+      </div>
+      <div id="selectMoreButton" class="selectMoreButton">
+      <input class= "input" type="file" accept="image/*" id="input" ref="fileInput" multiple @click="showSubmit" aria-label="Upload Image">
+      <div v-if="canSubmit === true">
+        <button class="button" @click="handleInput">Submit</button>
       </div>
     </div>
-
-    <div id = leftSidebar>
+    </div>
+<!-- Sidebars -->
+    <div id = leftSidebar class="leftSidebar">
       <image-sidebar :list-items="loadedImages" :selected="selectedImage" @remove="removeImage"></image-sidebar>
     </div>
     <div id = rightSidebar>
@@ -159,37 +291,52 @@ function closeImageSelect(): void {
 
     <!-- Image Preview Frame -->
     <div id="middle">
-      <div class="box">
-
+      <div>
         <ImageFrame :imageSrc="loadedImages[currentIndex.valueOf()]?.url" />
       </div>
-      <div class="box">
-        <ImageFrame placeholder-text="Waiting on Prediction" />
+      <div v-if="processedImages.length > 0">
+        <h3>predicted number: {{processedImages[currentIndex.valueOf()]?.prediction }}</h3>
+      </div>
+      <div>
+        <ImageFrame :imageSrc="processedImages[currentIndex.valueOf()]?.url" />
       </div>
     </div>
 
     <!-- Navigation Controls -->
     <div id="bottom">
       <div id="previousButton">
-        <BButton pill @click="previous">Previous</BButton>
+        <Button class="button" @click="previous">Previous</Button>
       </div>
-      <div id="oyster"></div>
+      <!--<div id="oyster"></div>-->
       <div id="nextButton">
-        <BButton pill @click="next">Next</BButton>
+        <Button class="button" @click="next">Next</Button>
       </div>
     </div>
     <!-- Progress Bar -->
     <div id="progressBar">
       <BProgress :value="(currentIndex + 1) / loadedImages.length * 100 || 0" />
     </div>
-    <!--<div id="selectMoreButton">-->
-      <!--<input type="file" ref="fileInput" style="display: none" @change="onFileChange" />-->
-      <!--<button @click="selectMore">Select more images</button>-->
-    <!-- Select More Button -->
-    <div id="selectMoreButton">
-      <input type="file" id="input" ref="fileInput" multiple @click="showSubmit" >
-      <div v-if="canSubmit === true">
-        <button @click="handleInput">Submit</button>
+    <!--display processing status-->
+    <div v-if="isProcessing" class="processing-section">
+      <h3>Processing Images</h3>
+      <div class="processing-status">
+      <div v-for="(image, index) in loadedImages" :key="index" class="image-status">
+        {{image.filename}}
+        <span v-if="processedImages.find(p => p.filename === image.filename)">
+          Done
+        </span>
+        <span v-else>
+          Processing...
+        </span>
+      </div>
+      </div>
+    </div>
+    <!--display processed images-->
+    <div v-if="!isProcessing && Object.keys(processedImages).length > 0" class="processing-status">
+      <h3>Processed Results</h3>
+      <div v-for="(image, index) in loadedImages":key="index" class="image-status">
+        <h4>{{ image.filename }}</h4>
+        <span> Success </span>
       </div>
     </div>
   </main>
@@ -202,10 +349,7 @@ function closeImageSelect(): void {
 }
 
 .box {
-  width:200px;
-  height: 200px;
-  background-color: #6B6B6B;
-  margin: 10px
+/* leave empty */
 }
 #progressBar{
 }
@@ -213,12 +357,14 @@ function closeImageSelect(): void {
 #leftSidebar{
   width: 10vw;
   min-height:60vh;
-  position: absolute; left: 0px; top: 37px;
+  position: absolute;
+  left: 0px;
+  top: 90px;
 }
 #rightSidebar{
   width: 10vw;
   min-height:60vh;
-  position: absolute; right: 0px; top: 37px;
+  position: absolute; right: 0px; top: 90px;
 }
 #top{
   margin: 10px auto;
@@ -260,10 +406,43 @@ function closeImageSelect(): void {
   margin-top: 10px;
   position: absolute; left: 0px
 }
-#oyster{
-  width: 100px;
-  height: 100px;
-  background-color: yellowgreen;
-  margin: 10px;
+.processing-status {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  top: 100px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.image-status {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.processing-status div {
+   margin: 1rem auto; /* Center horizontally */
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  max-height: 200px; /* Height for ~5 items */
+  overflow-y: auto; /* Enables vertical scrolling */
+  width: 80%; /* Takes up most of the center space but not all */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.selectMoreButton{
+  width: 100%;  /* Changed from 10vw to take full width of parent */
+  margin: 10px auto;  /* Center the button */
+  position: relative;  /* Changed from absolute to relative */
+  left: auto;  /* Remove the left positioning */
+  padding: 0 10%;  /* Add some padding to prevent touching edges */
+  text-align: center;  /* Center the button content */
 }
 </style>
