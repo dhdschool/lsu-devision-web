@@ -11,15 +11,7 @@
   --color-left-col: #eef8eb;        /* Left column background */
   --color-light-gray: #f0f0f0;      /* Button background */
   --color-right-col: #fdfce9;       /* Right column background */
-  --color-dark-gray: #343a40;       /* Card border & text */
   --color-link-blue: #007bff;       /* Hyperlinks */
-  --color-right-col: #fdfce9;       /* Right column background */
-  --color-white: #ffffff;           /* Backgrounds, inputs, sections */
-  --color-light-gray: #f0f0f0;      /* Button background */
-  --color-hover-gray: #e0e0e0;      /* Button hover */
-  --color-card-bg: #f8f9fa;         /* Card background */
-  --color-border-light: #eee;       /* Section dividers */
-  --color-button: #000000;          /* Button text color */
 }
 
 /* 🌙 Dark Theme */
@@ -35,14 +27,6 @@
   --color-link-blue: #66aaff;       /* Hyperlinks */
   --color-light-gray: #444;         /* Button background */
   --color-hover-gray: #555;         /* Button hover */
-  --color-left-col: #2e3d2f;        /* Left column background */
-  --color-light-gray: #444;         /* Button background */
-  --color-link-blue: #66aaff;       /* Hyperlinks */
-  --color-right-col: #44432c;       /* Right column background */
-  --color-white: #181818;           /* Backgrounds, inputs, sections */
-  --color-card-bg: #222;            /* Card background */
-  --color-border-light: #666;       /* Section dividers */
-  --color-button: #f8f8f8;          /* Button text color */
 }
 
 .bg {
@@ -158,8 +142,10 @@
 }
 
 .main-text {
+
+}
 .spacer {
-  flex: 1 1 0%;
+  flex: 1 1 0;
   color: var(--color-black);
   text-align: left;
 }
@@ -170,6 +156,7 @@ main {
   gap: 1.5rem;
   margin: 0 auto;
   max-width: 100%;
+}
 .font {
   color: var(--color-black);
 }
@@ -212,9 +199,7 @@ main {
   gap: 1.5rem;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   margin: 0 auto;
-  gap: 1.5rem;
   max-width: 1400px;
-  margin: 0 auto;
 }
 
 .settings-page {
@@ -229,9 +214,7 @@ main {
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--color-hover-gray);
   color: var(--color-black);
-  padding: 1.5rem;
 }
 
 .settings-section h2 {
@@ -239,9 +222,6 @@ main {
   margin-bottom: 1rem;
   font-size: 1.25rem;
   border-bottom: 1px solid var(--color-border-light);
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-  margin-top: 0;
   padding-bottom: 0.5rem;
 }
 
@@ -263,12 +243,11 @@ main {
   padding: 0.5rem;
   border-radius: 4px;
   box-sizing: border-box;
-  color: var(--color-black);
   margin-right: 0.5rem;
-  padding: 0.5rem;
 }
 
 .settings-section label {
+}
 .save-button {
   background-color: var(--color-light-gray);
   color: var(--color-button);
@@ -293,10 +272,12 @@ main {
 }
 
 .spacer {
+}
+
 .main-text {
   text-align: left;
   color: var(--color-black);
-  flex: 1 1 0%;
+  flex: 1 1 0;
 }
 
 .image {
