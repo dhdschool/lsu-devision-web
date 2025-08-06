@@ -39,3 +39,13 @@ class PredictionModel(models.Model):
         else:
             string = f"Prediction at {self.timestamp}"
         return string
+    
+class SettingsProfile(models.Model):
+    theme = models.CharField
+    autoExport = models.BooleanField
+    defaultFolderPath = models.CharField
+    defaultModel = models.CharField
+
+    def __str__(self):
+        return super().__str__()
+    

@@ -6,6 +6,8 @@ from rest_framework import status, serializers
 from .serializers import PredictionRequestSerializer, PredictionModelSerializer
 from .tasks import process_image_task
 from django.conf import settings
+from django.views.decorators.http import require_http_methods
+from django.http import JsonResponse
 import os
 
 class SubmitPredictionView(APIView):
@@ -56,3 +58,17 @@ class PredictionResultView(APIView):
             'status': 'completed',
             'result': data
         }, status = status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
+
+@require_http_methods(["GET","POST"])
+def export_settings(request):
+    import json
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+        theme = data.get('theme')
+        save_model = data.get('save_model')
+        save_folder = data.get('save_folder')
+        # Save to Profile or handle as needed
+        return JsonResponse({'status': 'ok'})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
