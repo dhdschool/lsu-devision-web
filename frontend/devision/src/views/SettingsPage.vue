@@ -30,6 +30,10 @@ const AppearanceToggle = ref<Toggle[]>([
   { id: 1, name: 'Light Theme', isActive: true },
   { id: 2, name: 'Dark Theme', isActive: false },
 ])
+const ModeToggle = ref<Toggle[]>([
+  {id: 1, name: 'Frog Mode', isActive: false},
+  {id : 2, name: 'Oyster Mode', isActive: true}
+])
 
 // Utility toggle function
 function toggleSetting(toggles: Toggle[], id: number): Toggle[] {
@@ -69,6 +73,7 @@ const settingsSections = [
   { id: 1, title: 'Run Time Settings', toggles: runtTimeToggle, toggleMethod: toggleSetting, field: 'checkbox' },
   { id: 2, title: 'Model/Folder Default Settings', toggles: modelFolderToggle, toggleMethod: toggleSetting, field: 'text' },
   { id: 3, title: 'Appearance', toggles: AppearanceToggle, toggleMethod: themeToggle, field: 'checkbox' },
+  {id: 4, title: 'Mode', toggles: ModeToggle, toggleMethod: themeToggle, field: 'checkbox'}
 ]
 function saveSettingsBackend() {
   console.log("Settings Backend")
