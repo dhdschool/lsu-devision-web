@@ -5,15 +5,30 @@ import ImageFrame from "@/components/ImageFrame.vue";
 import DropdownList from "@/components/DropdownList.vue";
 import ImageSidebar from "@/components/ImageSidebar.vue";
 import StatsSidebar from "@/components/StatsSidebar.vue";
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import type { images, predictions } from '@/components/images';
 
 
 // 📌 Reactive State Definitions
 
+const currentMode = ref(localStorage.getItem("mode") || "oyster-mode");
 // Available model names for user selection
-const modelSelectItems = ["frog-egg-counter", "oyster_2-4mm", "oyster_4-6mm", "xenopus-4-class"]
+
+const all_models = ["frog-egg-counter", "oyster_2-4mm", "oyster_4-6mm", "xenopus-4-class"]
+
+
+
+const filteredModels = computed(() => {
+  if (currentMode.value === "oyster-mode") {
+    return["oyster_2-4mm", "oyster_4-6mm",];
+  }
+  else {
+    return ["frog-egg-counter", "xenopus-4-class"];
+  }
+});
+
+const modelSelectItems = computed(() => filteredModels.value);
 
 // Currently selected model; default prompt displayed initially
 const modelSelection = ref<string>("Select a model");
@@ -313,7 +328,7 @@ function handleStatsSubmit(statsData: any) {
     <div id = leftSidebar class="leftSidebar">
       <image-sidebar :list-items="loadedImages" :selected="selectedImage" @remove="removeImage"></image-sidebar>
     </div>
-    <div id = rightSidebar>
+    <div v-if="currentMode === 'oyster-mode'" id = rightSidebar>
       <stats-sidebar @submit="handleStatsSubmit"></stats-sidebar>
     </div>
 

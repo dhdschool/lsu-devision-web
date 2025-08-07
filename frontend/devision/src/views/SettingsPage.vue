@@ -61,6 +61,23 @@ function themeToggle(toggles: Toggle[], id: number): Toggle[] {
 
 }
 
+function modeToggle(toggles: Toggle[], id: number): Toggle[] {
+  const updated = toggles.map(toggle => ({
+    ...toggle,
+    isActive: toggle.id === id
+  }))
+
+  const selected = updated.find(t => t.isActive)
+  if (selected) {
+    const modeClass = selected.name.includes('Frog') ? 'frog-mode' : 'oyster-mode'
+    document.body.classList.remove('frog-mode', 'oyster-mode')
+    document.body.classList.add(modeClass)
+    localStorage.setItem('mode', modeClass)
+  }
+
+  return updated
+}
+
 // Sync UI with saved theme on load
 const savedTheme = localStorage.getItem('theme') || 'theme-light'
 document.body.classList.add(savedTheme)
@@ -68,12 +85,20 @@ AppearanceToggle.value = AppearanceToggle.value.map(toggle => ({
   ...toggle,
   isActive: savedTheme === (toggle.name === 'Dark Theme' ? 'theme-dark' : 'theme-light')
 }))
+
+const savedMode = localStorage.getItem('mode') || 'oyster-mode'
+document.body.classList.add(savedMode)
+ModeToggle.value = ModeToggle.value.map(toggle => ({
+  ...toggle,
+  isActive: savedMode === (toggle.name === 'Frog Mode' ? 'frog-mode' : 'oyster-mode')
+}))
+
 // Section list
 const settingsSections = [
   { id: 1, title: 'Run Time Settings', toggles: runtTimeToggle, toggleMethod: toggleSetting, field: 'checkbox' },
   { id: 2, title: 'Model/Folder Default Settings', toggles: modelFolderToggle, toggleMethod: toggleSetting, field: 'text' },
   { id: 3, title: 'Appearance', toggles: AppearanceToggle, toggleMethod: themeToggle, field: 'checkbox' },
-  {id: 4, title: 'Mode', toggles: ModeToggle, toggleMethod: themeToggle, field: 'checkbox'}
+  {id: 4, title: 'Mode', toggles: ModeToggle, toggleMethod: modeToggle, field: 'checkbox'}
 ]
 function saveSettingsBackend() {
   console.log("Settings Backend")
