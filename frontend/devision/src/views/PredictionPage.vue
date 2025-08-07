@@ -60,6 +60,7 @@ const removeAllImages = () => {
   loadedImages.value = <images[]>[];
   currentIndex.value = 0;
   processedImages.value = <predictions[]>[];
+  processingIndex.value = 0;
 };
 
 // Controls visibility of image selection popup (if implemented)
@@ -192,10 +193,7 @@ async function sendImages() {
 }
 
 // Polls backend for task completion, then stores prediction result
-async function pollForImageResult(
-  taskID: string,
-  filename: string
-): Promise<void> {
+async function pollForImageResult(taskID: string, filename: string): Promise<void> {
   return new Promise((resolve) => {
     const maxAttempts = 30;
     let attempts = 0;
@@ -208,14 +206,39 @@ async function pollForImageResult(
 
         if (response.data.status === "completed") {
           console.log('Image processing completed:', filename, 'result:', response.data);
-          processedImages.value.push({
+          const classCounts = response.data.result.class_counts;
+          const classCount = Object.keys(classCounts).length;
+          const hasClass1 = (classCounts[1] ?? 0)>0;
+          const hasClass2 = classCounts[2] > 0;
+
+          const baseImage = {
             filename: filename,
             index: processingIndex.value,
-            url: `http://localhost:8000${response.data.result.annotated_image.image}`,
-            prediction: response.data.result.class_counts[1]
-          });
+            url: `http://localhost:8000${response.data.result.annotated_image?.image || ''}`
+          };
+          if (!hasClass1 && !hasClass2) {
+          // No classes detected
+            processedImages.value.push(baseImage);
+          } else if (hasClass1 && !hasClass2) {
+        // Only class 1 detected
+            processedImages.value.push({
+            ...baseImage,
+            prediction: classCounts[1]
+            });
+          } else if (hasClass1 && hasClass2) {
+          // Both classes detected
+            processedImages.value.push({
+              ...baseImage,
+              prediction: classCounts[1],
+              classification: true,
+              classification_prediction: classCounts[2]
+            });
+          } else {
+            console.log("Unexpected class configuration, skipping image");
+          }
           processingIndex.value++;
           resolve();
+
         } else if (response.data.status === "failed") {
           console.error(`Image processing failed: ${filename}`, response.data.error);
           resolve();
@@ -296,7 +319,15 @@ function exportPrediction(): void {
         <ImageFrame :imageSrc="loadedImages[currentIndex.valueOf()]?.url" />
       </div>
       <div v-if="processedImages.length > 0">
-        <h3>predicted number: {{processedImages[currentIndex.valueOf()]?.prediction }}</h3>
+        <div v-if="processedImages[currentIndex.valueOf()]?.classification">
+        <h3>Class 1 number: {{processedImages[currentIndex.valueOf()]?.prediction }} <br> Class 2 number: {{processedImages[currentIndex.valueOf()]?.classification_prediction }}</h3>
+        </div>
+        <div v-else-if="processedImages[currentIndex.valueOf()]?.prediction">
+        <h3>Class 1 number: {{processedImages[currentIndex.valueOf()]?.prediction }}</h3>
+        </div>
+        <div v-else>
+        <h3>wrong model or <br> not finished predicting</h3>
+        </div>
       </div>
       <div>
         <ImageFrame :imageSrc="processedImages[currentIndex.valueOf()]?.url" />

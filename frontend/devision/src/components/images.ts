@@ -5,5 +5,8 @@ export interface images{
 }
 
 export interface predictions extends images{
-    prediction: number;
+    prediction?: number;
+    classification?: boolean;
+    classification_prediction?: number;
+
 }
