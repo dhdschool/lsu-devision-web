@@ -280,6 +280,10 @@ function exportPrediction(): void {
   console.log("Export pressed");
 }
 
+function handleStatsSubmit(statsData: any) {
+  console.log('Recieved stats data:', statsData);
+}
+
 </script>
 
 <template>
@@ -310,7 +314,7 @@ function exportPrediction(): void {
       <image-sidebar :list-items="loadedImages" :selected="selectedImage" @remove="removeImage"></image-sidebar>
     </div>
     <div id = rightSidebar>
-      <stats-sidebar></stats-sidebar>
+      <stats-sidebar @submit="handleStatsSubmit"></stats-sidebar>
     </div>
 
     <!-- Image Preview Frame -->
@@ -477,5 +481,15 @@ function exportPrediction(): void {
   left: auto;  /* Remove the left positioning */
   padding: 0 10%;  /* Add some padding to prevent touching edges */
   text-align: center;  /* Center the button content */
+}
+#rightSidebar {
+  min-height: 60vh;
+  position: absolute;
+  top: 100px;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: #f8f9fa; /* Light background to match other elements */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 </style>
