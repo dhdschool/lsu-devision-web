@@ -8,6 +8,7 @@ import StatsSidebar from "@/components/StatsSidebar.vue";
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import type { images, predictions } from '@/components/images';
+import ExcelExport from '@/components/ExcelExport.vue';
 
 
 // 📌 Reactive State Definitions
@@ -17,7 +18,7 @@ const currentMode = ref(localStorage.getItem("mode") || "oyster-mode");
 
 const all_models = ["frog-egg-counter", "oyster_2-4mm", "oyster_4-6mm", "xenopus-4-class"]
 
-
+const excelExport = ref<InstanceType<typeof ExcelExport> | null>(null);
 
 const filteredModels = computed(() => {
   if (currentMode.value === "oyster-mode") {
@@ -315,7 +316,14 @@ function handleStatsSubmit(statsData: any) {
         <button class="button" @click = "removeAllImages">Clear</button>
       </div>
       <div id="exportButton">
-        <Button class="button" @click="exportPrediction">Export</Button>
+        <v-if v-if="!isProcessing && Object.keys(processedImages).length > 0">
+          <ExcelExport
+            :data="processedImages"
+            :export-to-csv="false"
+            ref="excelExport"
+            class="button"
+          />
+        </v-if>
       </div>
       <div id="selectMoreButton" class="selectMoreButton">
       <input class= "input" type="file" accept="image/*" id="input" ref="fileInput" multiple @click="showSubmit" aria-label="Upload Image">
@@ -390,7 +398,6 @@ function handleStatsSubmit(statsData: any) {
         <span> Success </span>
       </div>
     </div>
-
   </main>
 </template>
 
