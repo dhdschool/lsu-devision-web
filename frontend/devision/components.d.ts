@@ -19,6 +19,7 @@ declare module 'vue' {
     DropdownImages: typeof import('./src/components/redundant/DropdownImages.vue')['default']
     DropdownList: typeof import('./src/components/DropdownList.vue')['default']
     DropDownList: typeof import('./src/components/DropDownList.vue')['default']
+    ExcelExport: typeof import('./src/components/ExcelExport.vue')['default']
     FileSelect: typeof import('./src/components/FileSelect.vue')['default']
     HelloWorld: typeof import('./src/components/redundant/HelloWorld.vue')['default']
     IconCommunity: typeof import('./src/components/icons/IconCommunity.vue')['default']
