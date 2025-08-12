@@ -458,37 +458,10 @@ function handleStatsSubmit(statsData: any) {
   margin-top: 10px;
   position: absolute; left: 0px
 }
-.processing-status {
-  margin: 1rem 0;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 4px;
-  max-height: 200px;
-  overflow-y: auto;
-  top: 100px;
-  z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
 
-.image-status {
-  margin: 0.5rem 0;
-  padding: 0.5rem;
-  background: white;
-  border-radius: 4px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.processing-status div {
-   margin: 1rem auto; /* Center horizontally */
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 4px;
-  max-height: 200px; /* Height for ~5 items */
-  overflow-y: auto; /* Enables vertical scrolling */
-  width: 80%; /* Takes up most of the center space but not all */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
+
+
+
 .selectMoreButton{
   width: 100%;  /* Changed from 10vw to take full width of parent */
   margin: 10px auto;  /* Center the button */
