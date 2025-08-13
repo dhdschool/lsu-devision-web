@@ -69,6 +69,14 @@ const processingTaskID = ref<string | null>(null);
 // Stores processed image results returned from backend
 const processedImages = ref<predictions[]>([]);
 
+const statsData = ref({
+  sizeClass: '',
+  seedTrayWeight: 0,
+  slideWeight: 0,
+  combinedWeight: 0
+});
+
+const oysterFlag = ref(false);
 // 📦 Utility Functions
 
 // Clears the image list and resets preview index
@@ -292,12 +300,21 @@ function predict(): void {
 }
 
 // 🗂 Export Button Action (placeholder)
-function exportPrediction(): void {
-  console.log("Export pressed");
-}
 
-function handleStatsSubmit(statsData: any) {
-  console.log('Recieved stats data:', statsData);
+
+function handleStatsSubmit(values: (string | number)[]) {
+  console.log('Received stats data:', values);
+
+  // Update the statsData ref with the values from the sidebar
+  statsData.value = {
+    sizeClass: String(values[0]),
+    seedTrayWeight: Number(values[1]),
+    slideWeight: Number(values[2]),
+    combinedWeight: Number(values[3])
+  };
+
+  console.log('Updated statsData:', statsData.value);
+  oysterFlag.value = true;
 }
 
 </script>
@@ -316,14 +333,25 @@ function handleStatsSubmit(statsData: any) {
         <button class="button" @click = "removeAllImages">Clear</button>
       </div>
       <div id="exportButton">
-        <v-if v-if="!isProcessing && Object.keys(processedImages).length > 0">
-          <ExcelExport
-            :data="processedImages"
-            :export-to-csv="false"
-            ref="excelExport"
-            class="button"
-          />
-        </v-if>
+
+        <div v-if="!isProcessing && Object.keys(processedImages).length > 0">
+          <div v-if="currentMode === 'oyster-mode' && oysterFlag === true">
+            <ExcelExport
+              :data="processedImages"
+              :export-to-csv="false"
+              :statsData="statsData"
+              :model-name="modelSelection"
+              ref="excelExport"
+            />
+          </div>
+          <div v-else>
+            <ExcelExport
+              :data="processedImages"
+              :export-to-csv="false"
+              ref="excelExport"
+            />
+          </div>
+        </div>
       </div>
       <div id="selectMoreButton" class="selectMoreButton">
       <input class= "input" type="file" accept="image/*" id="input" ref="fileInput" multiple @click="showSubmit" aria-label="Upload Image">

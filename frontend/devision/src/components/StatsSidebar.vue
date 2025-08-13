@@ -29,6 +29,7 @@ function ifNull(): boolean {
 const emit = defineEmits(['submit']);
 
 function handleSubmit(){
+  console.log('stats bar pressed')
   const values = getValues();
   emit('submit', values)
 }
