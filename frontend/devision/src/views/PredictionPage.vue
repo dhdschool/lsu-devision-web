@@ -7,7 +7,7 @@ import ImageSidebar from "@/components/ImageSidebar.vue";
 import StatsSidebar from "@/components/StatsSidebar.vue";
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
-import type { images, predictions } from '@/components/images';
+import type { images, predictions, oyster_predictions } from '@/components/images';
 import ExcelExport from '@/components/ExcelExport.vue';
 
 
@@ -57,17 +57,13 @@ const fileInput = ref<HTMLInputElement | null>(null);
 // Controls whether the submit button is visible
 const canSubmit = ref(false);
 
-// Tracks the polling interval for checking backend status (if applicable)
-const pollingInterval = ref<number | null>(null);
-
+// Reference to the image preview element
+ref<number | null>(null);
 // Flags whether image predictions are currently being processed
 const isProcessing = ref(false);
 
-// Stores the task ID returned by the backend for tracking async jobs
-const processingTaskID = ref<string | null>(null);
-
 // Stores processed image results returned from backend
-const processedImages = ref<predictions[]>([]);
+const processedImages = ref<Array<predictions | oyster_predictions>>([]);
 
 const statsData = ref({
   sizeClass: '',
@@ -83,12 +79,31 @@ const oysterFlag = ref(false);
 const removeAllImages = () => {
   loadedImages.value = <images[]>[];
   currentIndex.value = 0;
-  processedImages.value = <predictions[]>[];
+  processedImages.value = [];
   processingIndex.value = 0;
-};
+  storeIndex.value = 0;
 
-// Controls visibility of image selection popup (if implemented)
-const showImageSelect = ref(false);
+  selectedImage.value = null;
+  selectedPredictedImage.value = null;
+
+  // Reset UI states
+  canSubmit.value = false;
+
+  // Reset file input
+  if (fileInput.value) {
+    fileInput.value.value = '';
+  }
+
+  if (currentMode.value === "oyster-mode") {
+    oysterFlag.value = false;
+    statsData.value = {
+      sizeClass: '',
+      seedTrayWeight: 0,
+      slideWeight: 0,
+      combinedWeight: 0
+    };
+  }
+};
 
 // Removes a specific image from the loaded list based on ID
 const removeImage = (id: number) => {
@@ -161,7 +176,9 @@ async function sendImages() {
   }
 
   isProcessing.value = true;
-  processedImages.value = <predictions[]>[];
+
+  // Reset the processed images array
+  processedImages.value = [];
 
   try {
     for (const image of loadedImages.value as images[]) {
@@ -230,8 +247,7 @@ async function pollForImageResult(taskID: string, filename: string): Promise<voi
 
         if (response.data.status === "completed") {
           console.log('Image processing completed:', filename, 'result:', response.data);
-          const classCounts = response.data.result.class_counts;
-          const classCount = Object.keys(classCounts).length;
+          const classCounts = response.data.result.class_counts || {};
           const hasClass1 = (classCounts[1] ?? 0)>0;
           const hasClass2 = classCounts[2] > 0;
 
@@ -240,26 +256,37 @@ async function pollForImageResult(taskID: string, filename: string): Promise<voi
             index: processingIndex.value,
             url: `http://localhost:8000${response.data.result.annotated_image?.image || ''}`
           };
-          if (!hasClass1 && !hasClass2) {
-          // No classes detected
-            processedImages.value.push(baseImage);
-          } else if (hasClass1 && !hasClass2) {
-        // Only class 1 detected
-            processedImages.value.push({
-            ...baseImage,
-            prediction: classCounts[1]
-            });
-          } else if (hasClass1 && hasClass2) {
-          // Both classes detected
+
+          if (currentMode.value === "oyster-mode") {
+            // For oyster mode, create an oyster_predictions object
             processedImages.value.push({
               ...baseImage,
               prediction: classCounts[1],
-              classification: true,
-              classification_prediction: classCounts[2]
-            });
+              model: modelSelection.value
+            } as oyster_predictions);
           } else {
-            console.log("Unexpected class configuration, skipping image");
+            if (!hasClass1 && !hasClass2) {
+              // No classes detected
+              processedImages.value.push(baseImage as predictions);
+            } else if (hasClass1 && !hasClass2) {
+              // Only class 1 detected
+              processedImages.value.push({
+                ...baseImage,
+                prediction: classCounts[1]
+              } as predictions);
+            } else if (hasClass1 && hasClass2) {
+              // Both classes detected
+              processedImages.value.push({
+                ...baseImage,
+                prediction: classCounts[1],
+                classification: true,
+                classification_prediction: classCounts[2]
+              } as predictions);
+            } else {
+              console.log("Unexpected class configuration, skipping image");
+            }
           }
+
           processingIndex.value++;
           resolve();
 
@@ -303,18 +330,70 @@ function predict(): void {
 
 
 function handleStatsSubmit(values: (string | number)[]) {
-  console.log('Received stats data:', values);
+  if (currentMode.value !== "oyster-mode" || !processedImages.value[currentIndex.value]) {
+    return;
+  }
 
-  // Update the statsData ref with the values from the sidebar
-  statsData.value = {
-    sizeClass: String(values[0]),
-    seedTrayWeight: Number(values[1]),
-    slideWeight: Number(values[2]),
-    combinedWeight: Number(values[3])
+  const currentImage = processedImages.value[currentIndex.value];
+  const [seedTrayWeight, slideWeight, combinedWeight] = values as [number, number, number];
+
+  const updatedImage = {
+    ...currentImage,
+    seedTrayWeight,
+    slideWeight,
+    combinedWeight,
+    // Keep the old sizeClass for backward compatibility
+    sizeClass: currentImage.sizeClass || ''
   };
 
-  console.log('Updated statsData:', statsData.value);
-  oysterFlag.value = true;
+  // Update the image in the processedImages array
+  processedImages.value.splice(currentIndex.value, 1, updatedImage);
+
+  console.log('Updated image with measurements:', updatedImage);
+}
+
+
+function calculateTotalCount(image) {
+  if (!image?.seedTrayWeight || !image?.slideWeight || !image?.prediction || !image?.combinedWeight) {
+    console.log('Missing required values:', {
+      seedTrayWeight: image?.seedTrayWeight,
+      slideWeight: image?.slideWeight,
+      prediction: image?.prediction,
+      combinedWeight: image?.combinedWeight
+    });
+    return 'N/A';
+  }
+
+  const totalSeedTray = image.seedTrayWeight;  // Total weight of the brood
+  const slide = image.slideWeight;            // Weight of the empty slide
+  const subSample = image.prediction;          // Count from the subsample
+  const combined = image.combinedWeight;       // Weight of subsample + slide
+
+  console.log('Calculation inputs:', {
+    totalSeedTray,
+    slide,
+    subSample,
+    combined,
+    subsampleWeight: combined - slide  // Weight of just the subsample
+  });
+
+  // Calculate total count using the formula: totalSeedTray * (subSample / (combined - slide))
+  const subsampleWeight = combined - slide;
+  if (subsampleWeight <= 0) {
+    console.error('Invalid weights: combined weight must be greater than slide weight');
+    return 'N/A';
+  }
+
+  const ratio = subSample / subsampleWeight;
+  const total = totalSeedTray * ratio;
+
+  console.log('Calculation steps:', {
+    ratio,
+    totalBeforeRound: total,
+    totalAfterRound: Math.round(total)
+  });
+
+  return Math.round(total).toLocaleString();
 }
 
 </script>
@@ -335,7 +414,7 @@ function handleStatsSubmit(values: (string | number)[]) {
       <div id="exportButton">
 
         <div v-if="!isProcessing && Object.keys(processedImages).length > 0">
-          <div v-if="currentMode === 'oyster-mode' && oysterFlag === true">
+          <div v-if="currentMode === 'oyster-mode'">
             <ExcelExport
               :data="processedImages"
               :export-to-csv="false"
@@ -365,7 +444,10 @@ function handleStatsSubmit(values: (string | number)[]) {
       <image-sidebar :list-items="loadedImages" :selected="selectedImage" @remove="removeImage"></image-sidebar>
     </div>
     <div v-if="currentMode === 'oyster-mode'" id = rightSidebar>
-      <stats-sidebar @submit="handleStatsSubmit"></stats-sidebar>
+      <stats-sidebar
+        :current-stats="processedImages[currentIndex] || {}"
+        @submit="handleStatsSubmit"
+      />
     </div>
 
     <!-- Image Preview Frame -->
@@ -374,7 +456,31 @@ function handleStatsSubmit(values: (string | number)[]) {
         <ImageFrame :imageSrc="loadedImages[currentIndex.valueOf()]?.url" />
       </div>
       <div v-if="processedImages.length > 0">
-        <div v-if="processedImages[currentIndex.valueOf()]?.classification">
+        <div v-if="currentMode === 'oyster-mode' && processedImages.length > currentIndex && processedImages[currentIndex]?.prediction">
+          <div class="stats-grid">
+            <div>Subsample Count:</div>
+            <div>{{ processedImages[currentIndex]?.prediction }}</div>
+
+            <div>Size Class:</div>
+            <div>{{ processedImages[currentIndex]?.sizeClass || 'N/A' }}</div>
+
+            <div>Seed Tray Weight:</div>
+            <div>{{ processedImages[currentIndex]?.seedTrayWeight ? processedImages[currentIndex]?.seedTrayWeight + 'g' : 'N/A' }}</div>
+
+            <div>Slide Weight:</div>
+            <div>{{ processedImages[currentIndex]?.slideWeight ? processedImages[currentIndex]?.slideWeight + 'g' : 'N/A' }}</div>
+
+            <div>Combined Weight:</div>
+            <div>{{ processedImages[currentIndex]?.combinedWeight ? processedImages[currentIndex]?.combinedWeight.toFixed(2) + 'g' : 'N/A' }}</div>
+
+            <div v-if="processedImages[currentIndex]?.seedTrayWeight && processedImages[currentIndex]?.slideWeight"
+                 class="total-count">
+              <div><strong>Total Count:</strong></div>
+              <div><strong>{{ calculateTotalCount(processedImages[currentIndex]) }}</strong></div>
+            </div>
+          </div>
+        </div>
+        <div v-else-if="processedImages[currentIndex.valueOf()]?.classification">
         <h3>Class 1 number: {{processedImages[currentIndex.valueOf()]?.prediction }} <br> Class 2 number: {{processedImages[currentIndex.valueOf()]?.classification_prediction }}</h3>
         </div>
         <div v-else-if="processedImages[currentIndex.valueOf()]?.prediction">
@@ -495,7 +601,17 @@ function handleStatsSubmit(values: (string | number)[]) {
 }
 
 
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-size: 0.9em;
+}
 
+.stats-grid div:nth-child(odd) {
+  font-weight: bold;
+}
 
 .selectMoreButton{
   width: 100%;  /* Changed from 10vw to take full width of parent */
@@ -515,4 +631,20 @@ function handleStatsSubmit(values: (string | number)[]) {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+
+.total-count {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #dee2e6;
+  font-size: 1.1em;
+}
+
+.total-count div {
+  font-weight: bold;
+}
+
+
 </style>
