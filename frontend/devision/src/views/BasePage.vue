@@ -2,6 +2,9 @@
 import Toolbar from "@/components/Toolbar.vue";
 import "../assets/oyster-default-theme.css";
 import { onMounted } from 'vue'
+import { useMonitorSize } from "@/composables/monitor-size"; 
+
+const sizes = useMonitorSize();
 
 onMounted(() => {
   const savedTheme = localStorage.getItem('theme') || 'theme-light'

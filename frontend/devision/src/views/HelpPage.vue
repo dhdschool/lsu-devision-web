@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useMonitorSize } from '@/composables/monitor-size';
+
+
 
 const Cards = [
   { id: 1, title: 'Predictions', content: 'Text about Predictions functionality' },

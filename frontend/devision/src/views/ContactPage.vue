@@ -21,7 +21,7 @@ const Cards = [
 <template>
   <main>
     <h1 class="text-center">Contact Information</h1>
-    <div v-for="card in Cards" :key="card.id" class="contact-card">
+    <div v-for="card in Cards" :key="card.id" class="contact-card" >
       <h2 class="card-title">{{ card.title }}</h2>
       <div class="card-content" v-for="contact in card.contacts" :key="contact.id">
         <p>{{ contact.name }}<br>
@@ -33,6 +33,11 @@ const Cards = [
 </template>
 
 <style>
+
+.container {
+  display: justify-content;
+
+}
 </style>
 
 

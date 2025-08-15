@@ -108,8 +108,6 @@ function showSubmit(): void {
   canSubmit.value = true;
 }
 
-
-
 // Prediction actions
 function predict(): void {
   console.log("Prediction button pressed");
@@ -129,7 +127,6 @@ function exportPrediction(): void {
 function closeImageSelect(): void {
   showImageSelect.value = false;
 }
-
 </script>
 
 <template>
