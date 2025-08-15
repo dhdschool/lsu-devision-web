@@ -10,7 +10,6 @@ type Toggle = {
   isActive: boolean
 }
 
-
 const modelText = ref('')
 const folderText = ref('')
 
@@ -117,8 +116,6 @@ function getSettingsFromCookie() {
   return null;
 }
 
-
-
 </script>
 
 <template>
@@ -130,7 +127,7 @@ function getSettingsFromCookie() {
     >
       <h2>{{ section.title }}</h2>
 
-      <div v-for="toggle in section.toggles.value" :key="toggle.id">
+      <div v-for="(toggle, idx) in section.toggles.value" :key="toggle.id">
         <label>
           <input
             v-if="section.field === 'checkbox'"
@@ -139,8 +136,9 @@ function getSettingsFromCookie() {
             :checked="toggle.isActive"
             @change="section.toggles.value = section.toggleMethod(section.toggles.value, toggle.id)"
           />
+          
           <span v-if="section.field === 'checkbox'">{{ toggle.name }}</span>
-
+          
           <div v-if="section.field === 'text'">
           
           <input
@@ -160,6 +158,8 @@ function getSettingsFromCookie() {
             >Save</button>
           </div>
         </label>
+        <!--Adds a horizontal line in bettwen each item for clarity-->
+        <hr v-if="idx < section.toggles.value.length - 1" />
       </div>
     </div>
   </div>
