@@ -66,6 +66,7 @@ const isProcessing = ref(false);
 const processedImages = ref<Array<predictions | oyster_predictions>>([]);
 
 const statsData = ref({
+  groupNumber: 0,
   sizeClass: '',
   seedTrayWeight: 0,
   slideWeight: 0,
@@ -335,15 +336,16 @@ function handleStatsSubmit(values: (string | number)[]) {
   }
 
   const currentImage = processedImages.value[currentIndex.value];
-  const [seedTrayWeight, slideWeight, combinedWeight] = values as [number, number, number];
+  const [groupNumber, sizeClass, seedTrayWeight, slideWeight, combinedWeight] = values as [number, string, number, number, number];
 
   const updatedImage = {
     ...currentImage,
+    groupNumber,
+    sizeClass,
     seedTrayWeight,
     slideWeight,
     combinedWeight,
-    // Keep the old sizeClass for backward compatibility
-    sizeClass: currentImage.sizeClass || ''
+
   };
 
   // Update the image in the processedImages array
@@ -460,6 +462,9 @@ function calculateTotalCount(image) {
           <div class="stats-grid">
             <div>Subsample Count:</div>
             <div>{{ processedImages[currentIndex]?.prediction }}</div>
+
+            <div>Group Number:</div>
+            <div>{{ processedImages[currentIndex]?.groupNumber || 'N/A' }}</div>
 
             <div>Size Class:</div>
             <div>{{ processedImages[currentIndex]?.sizeClass || 'N/A' }}</div>

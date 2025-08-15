@@ -13,6 +13,7 @@ export interface predictions extends images{
 export interface oyster_predictions extends images{
     prediction?: number;
     model?: string;
+    groupNumber?: number;
     sizeClass?: string;
     seedTrayWeight?: number;
     slideWeight?: number;

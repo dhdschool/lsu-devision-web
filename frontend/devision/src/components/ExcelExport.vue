@@ -7,6 +7,8 @@ import { ref,computed } from "vue";
 const currentMode = ref(localStorage.getItem("mode") || "oyster-mode");
 
 interface StatsData {
+  groupNumber?: number;
+  sizeClass?: string;
   seedTrayWeight?: number;
   slideWeight?: number;
   combinedWeight?: number;
@@ -21,6 +23,8 @@ const props = defineProps<{
 
 const hasValidStats = computed(() => {
   return props.statsData &&
+         props.statsData.groupNumber !== undefined &&
+         props.statsData.sizeClass !== undefined &&
          props.statsData.seedTrayWeight !== undefined &&
          props.statsData.slideWeight !== undefined &&
          props.statsData.combinedWeight !== undefined;
@@ -86,7 +90,7 @@ function OysterExport() {
     }
 
     const data = [
-      ['Model', 'Group Number', 'Filename', 'Brood Tray Weight (g)',
+      ['Model', 'Group Number','Size Class','Filename', 'Brood Tray Weight (g)',
        'Empty Slide Weight (g)', 'Subsample + Slide Weight (g)', 'Subsample Weight (g)',
        'Subsample Count', 'Total Count'],
       ...props.data.map(img => {
@@ -99,7 +103,8 @@ function OysterExport() {
 
         return [
           props.modelName || 'N/A',
-          'N/A', // Group Number
+          isOyster ? (img.groupNumber?.valueOf() || 'N/A') : 'N/A',
+          isOyster ? (img.sizeClass?.toString() || 'N/A') : 'N/A',
           img.filename,
           isOyster ? (img.seedTrayWeight?.toFixed(2) || 'N/A') : 'N/A',
           isOyster ? (img.slideWeight?.toFixed(2) || 'N/A') : 'N/A',
@@ -122,6 +127,8 @@ function OysterExport() {
       const firstImage = props.data[0];
       const summaryData = [{
         'Model': props.modelName || 'N/A',
+        'Group Number': props.statsData.groupNumber?.valueOf() || 'N/A',
+        'Size Class': props.statsData.sizeClass?.toString() || 'N/A',
         'Brood Tray Weight (g)': props.statsData.seedTrayWeight?.toFixed(2) || 'N/A',
         'Empty Slide Weight (g)': props.statsData.slideWeight?.toFixed(2) || 'N/A',
         'Subsample + Slide Weight (g)': props.statsData.combinedWeight?.toFixed(2) || 'N/A',

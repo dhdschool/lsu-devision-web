@@ -10,6 +10,8 @@ const props = defineProps({
 });
 
 // Form fields
+const groupNumber = ref<number>(0);
+const sizeClass = ref<string>('');
 const broodTrayWeight = ref<number>(0);
 const emptySlideWeight = ref<number>(0);
 const combinedWeight = ref<number>(0);
@@ -24,7 +26,9 @@ const hasExistingStats = computed(() => {
 });
 
 const isFormValid = computed(() => {
-  return broodTrayWeight.value > 0 &&
+  return groupNumber.value > 0 &&
+         sizeClass.value &&
+         broodTrayWeight.value > 0 &&
          emptySlideWeight.value > 0 &&
          combinedWeight.value > emptySlideWeight.value;
 });
@@ -32,6 +36,8 @@ const isFormValid = computed(() => {
 // Watch for changes in currentStats and update form fields
 watch(() => props.currentStats, (newStats) => {
   if (newStats) {
+    groupNumber.value = newStats.groupNumber || 0;
+    sizeClass.value = newStats.sizeClass || '';
     broodTrayWeight.value = newStats.seedTrayWeight || 0;
     emptySlideWeight.value = newStats.slideWeight || 0;
     combinedWeight.value = newStats.combinedWeight || 0;
@@ -40,6 +46,8 @@ watch(() => props.currentStats, (newStats) => {
 
 function getValues() {
   return {
+    groupNumber: groupNumber.value,
+    sizeClass: sizeClass.value,
     seedTrayWeight: broodTrayWeight.value,
     slideWeight: emptySlideWeight.value,
     combinedWeight: combinedWeight.value
@@ -47,6 +55,8 @@ function getValues() {
 }
 
 function clearForm() {
+  groupNumber.value = 0;
+  sizeClass.value = '';
   broodTrayWeight.value = 0;
   emptySlideWeight.value = 0;
   combinedWeight.value = 0;
@@ -57,7 +67,7 @@ const emit = defineEmits(['submit']);
 function handleSubmit() {
   if (!isFormValid.value) return;
   const values = getValues();
-  emit('submit', [values.seedTrayWeight, values.slideWeight, values.combinedWeight]);
+  emit('submit', [values.groupNumber,values.sizeClass, values.seedTrayWeight, values.slideWeight, values.combinedWeight]);
 }
 </script>
 
@@ -65,6 +75,26 @@ function handleSubmit() {
   <div class="rightSideBar">
     <b-list-group>
       <b-list-group-item variant="light">Sample Measurements</b-list-group-item>
+
+      <b-list-group-item variant="light">
+        Group Number
+        <BFormInput
+          type="number"
+          v-model.number="groupNumber"
+          min="0"
+          step="0.01"
+          placeholder="Enter Group Number"
+        ></BFormInput>
+      </b-list-group-item>
+
+      <b-list-group-item variant="light">
+        Size Class
+        <BFormInput
+          type="text"
+          v-model="sizeClass"
+          placeholder="Enter Size Class"
+        ></BFormInput>
+      </b-list-group-item>
 
       <b-list-group-item variant="light">
         Brood Tray Weight (g)
