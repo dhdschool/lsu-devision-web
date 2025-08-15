@@ -127,7 +127,7 @@ function getSettingsFromCookie() {
     >
       <h2>{{ section.title }}</h2>
 
-      <div v-for="(toggle, idx) in section.toggles.value" :key="toggle.id">
+      <div v-for="(toggle,idx) in section.toggles.value" :key="toggle.id">
         <label>
           <input
             v-if="section.field === 'checkbox'"
@@ -158,7 +158,6 @@ function getSettingsFromCookie() {
             >Save</button>
           </div>
         </label>
-        <!--Adds a horizontal line in bettwen each item for clarity-->
         <hr v-if="idx < section.toggles.value.length - 1" />
       </div>
     </div>
@@ -170,7 +169,8 @@ function getSettingsFromCookie() {
 .settings-container {
   /* display: grid;*/
   display: flex;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  flex-shrink: 0;
+  /*grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));*/
   gap: 1.5rem;
   max-width: 1400px;
   margin: 0 auto;
@@ -178,12 +178,25 @@ function getSettingsFromCookie() {
 }
 
 .settings-section {
+  flex: 1 1 auto;
   background: var(--color-white);
   border: 1px solid var(--color-hover-gray);
   border-radius: 8px;
   padding: 1.5rem;
   color: var(--color-black);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 900px) {
+  .settings-container {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    }
+  .settings-section {
+    margin-bottom: 1rem;
+    max-width: 100%;
+  }
 }
 
 .settings-section h2 {
