@@ -8,6 +8,9 @@ on:
 jobs:
   build-windows:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: frontend/devision
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -18,10 +21,13 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: windows-installer
-          path: dist/*.exe
+          path: frontend/devision/dist/*.exe
 
   build-linux:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/devision
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -32,10 +38,13 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: linux-installer
-          path: dist/*.AppImage
+          path: frontend/devision/dist/*.AppImage
 
   build-macos:
     runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: frontend/devision
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -46,4 +55,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: macos-installer
-          path: dist/*.dmg
+          path: frontend/devision/dist/*.dmg
