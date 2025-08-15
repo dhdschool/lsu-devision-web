@@ -131,8 +131,6 @@ function closeImageSelect(): void {
 
 <template>
   <main>
-
-    <h1>Prediction Page</h1>
     <!--create dropdown list for model selection. Model selection logic can come later-->
     <div class="section" id="top">
       <DropdownList :items="modelSelectItems" />
@@ -194,11 +192,14 @@ function closeImageSelect(): void {
 
 <style type="css">
 
+
+
+
 .section{
   display: flex
 }
 
-.box {
+.box{
   width:200px;
   height: 200px;
   background-color: #6B6B6B;
@@ -242,7 +243,6 @@ function closeImageSelect(): void {
 #clearButton{
   margin: 5px;
 }
-
 #exportButton{
   margin: 5px;
 }
@@ -263,4 +263,71 @@ function closeImageSelect(): void {
   background-color: yellowgreen;
   margin: 10px;
 }
+
+@media (max-width: 900px) {
+  .section {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    }
+  .settings-section {
+    margin-bottom: 1rem;
+    max-width: 100%;
+  }
+  #progressBar{
+  }
+
+  #leftSidebar{
+    display: none;
+  }
+  #rightSidebar{
+    display: none;
+  }
+  #top{
+    margin: 10px auto;
+    align-items: center;
+    justify-content: space-around;
+  }
+  #middle{
+    margin: 10px;
+    align-items: center;
+    justify-content: space-around;
+    display: flex
+  }
+  #bottom{
+    width: auto;
+    display: flex;
+    justify-content:space-between
+  }
+  #modelSelect{
+    margin: 5px;
+  }
+  #predictButton{
+    margin: 5px;
+  }
+  #clearButton{
+    margin: 5px;
+  }
+  #exportButton{
+    margin: 5px;
+  }
+  #previousButton{
+    margin: 25px
+  }
+  #nextButton{
+    margin: 25px
+  }
+  #selectMoreButton{
+    width: 10vw;
+    margin-top: 10px;
+    position: absolute; left: 0px
+  }
+  #oyster{
+    width: 100px;
+    height: 100px;
+    background-color: yellowgreen;
+    margin: 10px;
+  }
+}
+
 </style>
