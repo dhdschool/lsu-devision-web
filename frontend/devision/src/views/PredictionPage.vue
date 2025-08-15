@@ -131,6 +131,7 @@ function closeImageSelect(): void {
 
 <template>
   <main>
+
     <!--create dropdown list for model selection. Model selection logic can come later-->
     <div class="section" id="top">
       <DropdownList :items="modelSelectItems" />
@@ -191,9 +192,6 @@ function closeImageSelect(): void {
 </template>
 
 <style type="css">
-
-
-
 
 .section{
   display: flex
@@ -274,6 +272,14 @@ function closeImageSelect(): void {
     margin-bottom: 1rem;
     max-width: 100%;
   }
+
+  .box{
+    width: 200px;
+    height: 200px;
+    background-color: #6B6B6B;
+    margin: 10px
+  }
+  
   #progressBar{
   }
 
