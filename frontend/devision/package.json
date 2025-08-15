@@ -2,9 +2,25 @@
   "name": "devision",
   "version": "0.0.0",
   "private": true,
+  "main": "electron.cjs",
+  "build": {
+    "appId": "com.lsu.devision",
+    "productName": "DevisionLauncher",
+    "files": [
+      "electron.cjs",
+      "src/**/*",
+      "vite.config.ts",
+      "package.json"
+    ],
+    "mac": { "target": "dmg" },
+    "win": { "target": "nsis" },
+    "linux": { "target": "AppImage" }
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "electron": "electron electron.cjs",
+    "start": "npm run electron",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
@@ -33,6 +49,7 @@
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.5.0",
     "@vue/tsconfig": "^0.7.0",
+    "electron": "^37.3.0",
     "eslint": "^9.22.0",
     "eslint-plugin-vue": "~10.0.0",
     "jiti": "^2.4.2",
