@@ -231,24 +231,13 @@ function closeImageSelect(): void {
   display: flex;
   justify-content:space-between
 }
-#modelSelect{
+#modelSelect, #predictButton, #clearButton, #exportButton{
   margin: 5px;
 }
-#predictButton{
-  margin: 5px;
-}
-#clearButton{
-  margin: 5px;
-}
-#exportButton{
-  margin: 5px;
-}
-#previousButton{
+#previousButton, #nextButton{
   margin: 25px
 }
-#nextButton{
-  margin: 25px
-}
+
 #selectMoreButton{
   width: 10vw;
   margin-top: 10px;
