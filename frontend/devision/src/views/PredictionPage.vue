@@ -262,23 +262,31 @@ function closeImageSelect(): void {
 }
 
 @media (max-width: 900px) {
-  .section {
+  
+  main{
+    display: flex;
     flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+  }
+  .section {
+    flex-direction:column;
     gap: 1rem;
     padding: 1rem;
-    }
-
-  .box{
-    width: 200px;
-    height: 200px;
+    align-items: center;
+    width: 100vw;
   }
-  .image-frame{
-    border-width: 2px !important;
+  
+  .box, .image-frame{
     width: 200px;
     height: 200px;
   } 
 
   #progressBar{
+    width: 80vw;
+    margin: 10px auto;
   }
 
   #leftSidebar{
@@ -287,45 +295,37 @@ function closeImageSelect(): void {
   #rightSidebar{
     display: none;
   }
-  #top{
+  #top, #bottom, #middle{
+    display: flex;
     margin: 10px auto;
     align-items: center;
     justify-content: space-around;
   }
-  #middle{
-    margin: 10px;
-    align-items: center;
-    justify-content: space-around;
-    display: flex
-  }
-  #bottom{
-    width: auto;
-    display: flex;
-    justify-content:space-between
+
+  #top{
+    flex-direction: row;
+    margin-top: 10vw;
   }
   #modelSelect{
     margin: 5px;
   }
-  #predictButton{
+
+  #predictButton, #clearButton, #exportButton, #previousButton, #nextButton{
     margin: 5px;
-  }
-  #clearButton{
-    margin: 5px;
-  }
-  #exportButton{
-    margin: 5px;
-  }
-  #previousButton{
-    margin: 25px
-  }
-  #nextButton{
-    margin: 25px
+    width: 80vw;
+    max-width: 200px;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
   }
   #selectMoreButton{
-    width: 10vw;
-    margin-top: 10px;
-    position: absolute; left: 0px
+    width: 90vw;
+    margin: 10px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
+
   #oyster{
     width: 100px;
     height: 100px;
