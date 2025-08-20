@@ -200,7 +200,6 @@ function closeImageSelect(): void {
 .box{
   width:200px;
   height: 200px;
-  background-color: #6B6B6B;
   margin: 10px
 }
 #progressBar{
@@ -268,18 +267,17 @@ function closeImageSelect(): void {
     gap: 1rem;
     padding: 1rem;
     }
-  .settings-section {
-    margin-bottom: 1rem;
-    max-width: 100%;
-  }
 
   .box{
     width: 200px;
     height: 200px;
-    background-color: #6B6B6B;
-    margin: 10px
   }
-  
+  .image-frame{
+    border-width: 2px !important;
+    width: 200px;
+    height: 200px;
+  } 
+
   #progressBar{
   }
 
