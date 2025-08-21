@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { BImg, BButton, BProgress } from 'bootstrap-vue-next';
+import {watch, onMounted} from 'vue'
 import ImageFrame from "@/components/ImageFrame.vue";
 import DropdownList from "@/components/DropdownList.vue";
 import ImageSidebar from "@/components/ImageSidebar.vue";
 import StatsSidebar from "@/components/StatsSidebar.vue";
-import { ref } from 'vue';
+import { KeepAlive, ref } from 'vue';
 import type {AxiosResponse} from "axios";
 import axios from 'axios';
 import type { images } from '@/components/images';
@@ -127,6 +128,20 @@ function exportPrediction(): void {
 function closeImageSelect(): void {
   showImageSelect.value = false;
 }
+
+watch(loadedImages, (newImages) => {
+  localStorage.setItem('loadedImages', JSON.stringify(newImages))
+}, {deep: true})
+
+onMounted(() => {
+  const savedImages = localStorage.getItem('loadedImages')
+  if(savedImages) {
+    loadedImages.value = JSON.parse(savedImages)
+    if(loadedImages.value.length > 0){
+      selectedImage.value = loadedImages.value[0]
+    }
+  }
+})
 </script>
 
 <template>
@@ -146,23 +161,22 @@ function closeImageSelect(): void {
       </div>
     </div>
 
-    <div id = leftSidebar>
-      <image-sidebar :list-items="loadedImages" :selected="selectedImage" @remove="removeImage"></image-sidebar>
-    </div>
-    <div id = rightSidebar>
-      <stats-sidebar></stats-sidebar>
-    </div>
-
-    <!-- Image Preview Frame -->
-    <div id="middle">
-      <div class="box">
-
-        <ImageFrame :imageSrc="loadedImages[currentIndex.valueOf()]?.url" />
+      <div id = leftSidebar>
+          <image-sidebar :list-items="loadedImages" :selected="selectedImage" @remove="removeImage"></image-sidebar>
       </div>
-      <div class="box">
-        <ImageFrame placeholder-text="Waiting on Prediction" />
+      <div id = rightSidebar>
+        <stats-sidebar></stats-sidebar>
       </div>
-    </div>
+
+      <!-- Image Preview Frame -->
+      <div id="middle">
+        <div class="box">
+            <ImageFrame :imageSrc="loadedImages[currentIndex.valueOf()]?.url" />
+        </div>
+        <div class="box">
+          <ImageFrame placeholder-text="Waiting on Prediction" />
+        </div>
+      </div>
 
     <!-- Navigation Controls -->
     <div id="bottom">
