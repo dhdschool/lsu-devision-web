@@ -296,7 +296,7 @@ onMounted(() => {
     display: none;
   }
   #rightSidebar{
-    display: none;
+  
   }
   #top, #bottom, #middle{
     display: flex;
